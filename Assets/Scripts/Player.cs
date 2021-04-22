@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public float mySpeed = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +16,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Move the player right by 1 unit, every second
-        transform.position += Vector3.right * Time.deltaTime;
+        // Move the player right by "mySpeed" units, every second
+        transform.position += Vector3.right * mySpeed * Time.deltaTime;
     }
 }
