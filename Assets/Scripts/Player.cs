@@ -27,10 +27,10 @@ public class Player : MonoBehaviour
     void Update()
     {
         CalculateMovement();
-        FireLaser();
+        TryFireLaser();
     }
 
-    void FireLaser()
+    void TryFireLaser()
     {
         // Reduce the cooldown time
         _cooldownTime -= Time.deltaTime;
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
         if (Input.GetButton("Fire1") && _cooldownTime <= 0f)
         {
             Vector3 laserPosition = transform.position + new Vector3(0, _laserOffsetY, 0);
-            GameObject.Instantiate(_myLaser, transform.position, Quaternion.identity);
+            GameObject.Instantiate(_myLaser, laserPosition, Quaternion.identity);
             _cooldownTime = _fireRate;
         }
     }
