@@ -7,6 +7,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 1f;
 
+    [SerializeField]
+    private float _fireRate = 0.5f;
+    private float _cooldownTime = -1f;
+
+    [SerializeField]
+    private GameObject _myLaser;
+
+    private float _laserOffsetY = 0.7f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +27,21 @@ public class Player : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+        FireLaser();
+    }
+
+    void FireLaser()
+    {
+        // Reduce the cooldown time
+        _cooldownTime -= Time.deltaTime;
+
+        // If fire button is pressed --AND no cooldown is remaining-- then create a laser, and reset the cooldown
+        if (Input.GetButton("Fire1") && _cooldownTime <= 0f)
+        {
+            Vector3 laserPosition = transform.position + new Vector3(0, _laserOffsetY, 0);
+            GameObject.Instantiate(_myLaser, transform.position, Quaternion.identity);
+            _cooldownTime = _fireRate;
+        }
     }
 
     void CalculateMovement()
@@ -30,11 +54,7 @@ public class Player : MonoBehaviour
         // Move the player by "mySpeed" units, every second
         transform.position += direction * _mySpeed * Time.deltaTime;
 
-        // if player position y is greater than 0
-        // set position y to 0
-        // if player position y < -4.5
-        // set position y to 4.5
-
+        // clamp player y
         if (transform.position.y > 0)
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
@@ -45,8 +65,6 @@ public class Player : MonoBehaviour
         }
 
         // screen wrap on x.
-        // if player position x is outside screen bounds -> abs(x) > 9.4f
-        // set position x to opposite side of screen -> -9.4f * the sign of the position
         float xPosition = transform.position.x;
         if (Mathf.Abs(xPosition) > 9.4f)
         {
