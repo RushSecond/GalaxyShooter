@@ -18,12 +18,6 @@ public class Player : MonoBehaviour
 
     private float _laserOffsetY = 0.7f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
     void Update()
     {
         CalculateMovement();
@@ -74,11 +68,8 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        // Remove one life
         _lives--;
 
-        // check if dead
-        // destroy us
         if (_lives <= 0)
         {
             Destroy(gameObject);

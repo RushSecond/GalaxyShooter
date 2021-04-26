@@ -7,7 +7,6 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 8f;
 
-    // Update is called once per frame
     void Update()
     {
         // move up by my speed every second

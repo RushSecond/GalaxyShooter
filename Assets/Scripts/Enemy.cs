@@ -11,10 +11,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _screenBoundsY = 5.4f; 
 
-    // Update is called once per frame
     void Update()
     {
-        // move down at 4 meters per second
         transform.Translate(Vector3.down * _mySpeed * Time.deltaTime);
 
         // if bottom of screen
@@ -29,9 +27,6 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // if other is Player
-        // damage the player
-        // destroy us
         if (other.tag == "Player")
         {
             Player playerScript = other.GetComponent<Player>();
@@ -40,9 +35,6 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // if other is laser
-        // destroy laser
-        // destroy us
         if (other.tag == "Laser")
         {
             Destroy(other.gameObject);
