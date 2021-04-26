@@ -11,12 +11,6 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _screenBoundsY = 5.4f; 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -31,6 +25,27 @@ public class Enemy : MonoBehaviour
             float yPosition = _screenBoundsY;
             transform.position = new Vector3(xPosition, yPosition, 0);
         }
+    }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // if other is Player
+        // damage the player (we'll do this later)
+        // destroy us
+        if (other.tag == "Player")
+        {
+            Debug.Log("I collided with Player");
+            Destroy(gameObject);
+        }
+
+        // if other is laser
+        // destroy laser
+        // destroy us
+        if (other.tag == "Laser")
+        {
+            Debug.Log("I collided with Laser");
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
     }
 }
