@@ -30,11 +30,13 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // if other is Player
-        // damage the player (we'll do this later)
+        // damage the player
         // destroy us
         if (other.tag == "Player")
         {
-            Debug.Log("I collided with Player");
+            Player playerScript = other.GetComponent<Player>();
+            if (playerScript)
+                playerScript.Damage();
             Destroy(gameObject);
         }
 
@@ -43,7 +45,6 @@ public class Enemy : MonoBehaviour
         // destroy us
         if (other.tag == "Laser")
         {
-            Debug.Log("I collided with Laser");
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

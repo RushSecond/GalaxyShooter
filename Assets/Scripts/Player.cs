@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float _mySpeed = 1f;
+    [SerializeField]
+    private int _lives = 3;
 
     [SerializeField]
     private float _fireRate = 0.5f;
@@ -67,6 +69,19 @@ public class Player : MonoBehaviour
         if (Mathf.Abs(xPosition) > 9.4f)
         {
             transform.position = new Vector3(-9.4f * Mathf.Sign(xPosition), transform.position.y, 0);
+        }
+    }
+
+    public void Damage()
+    {
+        // Remove one life
+        _lives--;
+
+        // check if dead
+        // destroy us
+        if (_lives <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
