@@ -8,6 +8,8 @@ public class SpawnManager : MonoBehaviour
     private float _spawnTime = 5f;
     [SerializeField]
     private GameObject _spawnEnemy;
+    [SerializeField]
+    private GameObject _enemyContainer;
 
     void Start()
     {
@@ -23,7 +25,8 @@ public class SpawnManager : MonoBehaviour
         // yield wait for 5 seconds
         while (true)
         {
-            Instantiate(_spawnEnemy, Enemy.RandomPositionAtTop(), Quaternion.identity);
+            GameObject newEnemy = Instantiate(_spawnEnemy, Enemy.RandomPositionAtTop(), Quaternion.identity);
+            newEnemy.transform.parent = _enemyContainer.transform;
             yield return waitSeconds;
         }
     }
