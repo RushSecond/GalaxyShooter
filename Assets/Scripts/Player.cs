@@ -16,7 +16,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _myLaser;
 
+    private SpawnManager _spawnManager;
+
     private float _laserOffsetY = 0.7f;
+
+    private void Start()
+    {
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if (!_spawnManager)
+            Debug.LogError("Spawn Manager is null");
+    }
 
     void Update()
     {
@@ -72,6 +82,10 @@ public class Player : MonoBehaviour
 
         if (_lives <= 0)
         {
+            // Communicate with spawn manager
+            // Let them know player is dead
+            _spawnManager.OnPlayerDeath();
+
             Destroy(gameObject);
         }
     }

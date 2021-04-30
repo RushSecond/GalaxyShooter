@@ -11,6 +11,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
 
+    private bool _stopSpawning = false;
+
     void Start()
     {
         StartCoroutine(SpawnRoutine());
@@ -23,12 +25,17 @@ public class SpawnManager : MonoBehaviour
         // while loop (infinite loop)
         // Instantiate enemy prefab
         // yield wait for 5 seconds
-        while (true)
+        while (!_stopSpawning)
         {
             GameObject newEnemy = Instantiate(_spawnEnemy, Enemy.RandomPositionAtTop(), Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
             yield return waitSeconds;
         }
+    }
+
+    public void OnPlayerDeath()
+    {
+        _stopSpawning = true;
     }
 }
 
