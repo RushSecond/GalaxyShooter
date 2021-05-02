@@ -15,6 +15,10 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private GameObject _myLaser;
+    [SerializeField]
+    private bool _useTripleShot = false;
+    [SerializeField]
+    private GameObject _myTripleLaser;
 
     private SpawnManager _spawnManager;
 
@@ -30,22 +34,34 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        CalculateMovement();
-        TryFireLaser();
-    }
-
-    void TryFireLaser()
-    {
         // Reduce the cooldown time
         _cooldownTime -= Time.deltaTime;
 
         // If fire button is pressed --AND no cooldown is remaining-- then create a laser, and reset the cooldown
         if (Input.GetButton("Fire1") && _cooldownTime <= 0f)
         {
+            FireLaser();
+        }
+
+        CalculateMovement();
+    }
+
+    void FireLaser()
+    {
+        //if triple shot is active, fire the triple laser
+        if(_useTripleShot)
+        {
+            Vector3 tripleLaserPosition = transform.position;
+            GameObject.Instantiate(_myTripleLaser, tripleLaserPosition, Quaternion.identity);
+        }
+        //else fire the single laser
+        else
+        {
             Vector3 laserPosition = transform.position + new Vector3(0, _laserOffsetY, 0);
             GameObject.Instantiate(_myLaser, laserPosition, Quaternion.identity);
-            _cooldownTime = _fireRate;
         }
+
+        _cooldownTime = _fireRate;
     }
 
     void CalculateMovement()
@@ -88,5 +104,17 @@ public class Player : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    public void StartTripleShot()
+    {
+        _useTripleShot = true;
+        StartCoroutine(EndTripleShot());
+    }
+
+    IEnumerator EndTripleShot()
+    {
+        yield return new WaitForSeconds(5f);
+        _useTripleShot = false;
     }
 }

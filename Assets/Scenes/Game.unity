@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 722035134}
   - component: {fileID: 722035136}
   - component: {fileID: 722035137}
+  - component: {fileID: 722035138}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -311,7 +312,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -84856891
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 1b4a8fdd39d3a45d0a9ee484ad6800ec, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -331,7 +332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 722035133}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.01, y: -2.97, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -353,6 +354,8 @@ MonoBehaviour:
   _lives: 3
   _fireRate: 0.5
   _myLaser: {fileID: 5995165263144656246, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}
+  _useTripleShot: 0
+  _myTripleLaser: {fileID: 7715632764734317057, guid: d488c9bfda6dc354a9593d5ca26c6fe6, type: 3}
 --- !u!61 &722035137
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -379,6 +382,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.5262744, y: 3.4810076}
   m_EdgeRadius: 0
+--- !u!50 &722035138
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722035133}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1308778663
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,3 +515,60 @@ Transform:
   m_Father: {fileID: 161326483}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &4150830815858370870
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184279, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150830816745184297, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
+      propertyPath: m_Name
+      value: Triple_Shot_Powerup
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
