@@ -356,6 +356,7 @@ MonoBehaviour:
   _myLaser: {fileID: 5995165263144656246, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}
   _useTripleShot: 0
   _myTripleLaser: {fileID: 7715632764734317057, guid: d488c9bfda6dc354a9593d5ca26c6fe6, type: 3}
+  _tripleShotTime: 10
 --- !u!61 &722035137
 BoxCollider2D:
   m_ObjectHideFlags: 0

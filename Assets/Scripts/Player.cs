@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     private bool _useTripleShot = false;
     [SerializeField]
     private GameObject _myTripleLaser;
+    [SerializeField]
+    private float _tripleShotTime = 5f;
 
     private SpawnManager _spawnManager;
 
@@ -106,15 +108,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Turns on triple shots,
+    // And calls a coroutine that will stop it after some time
     public void StartTripleShot()
     {
         _useTripleShot = true;
         StartCoroutine(EndTripleShot());
     }
 
+    // After waiting some time, turns off triple shots
     IEnumerator EndTripleShot()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(_tripleShotTime);
         _useTripleShot = false;
     }
 }
