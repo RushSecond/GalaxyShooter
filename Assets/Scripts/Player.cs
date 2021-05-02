@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     private GameObject _myTripleLaser;
     [SerializeField]
     private float _tripleShotTime = 5f;
+    private Coroutine tripleShotRoutine;
 
     private SpawnManager _spawnManager;
 
@@ -100,23 +101,20 @@ public class Player : MonoBehaviour
 
         if (_lives <= 0)
         {
-            // Communicate with spawn manager
-            // Let them know player is dead
             _spawnManager.OnPlayerDeath();
 
             Destroy(gameObject);
         }
     }
 
-    // Turns on triple shots,
-    // And calls a coroutine that will stop it after some time
     public void StartTripleShot()
     {
+        if (tripleShotRoutine != null)
+            StopCoroutine(tripleShotRoutine);
         _useTripleShot = true;
-        StartCoroutine(EndTripleShot());
+        tripleShotRoutine = StartCoroutine(EndTripleShot());
     }
 
-    // After waiting some time, turns off triple shots
     IEnumerator EndTripleShot()
     {
         yield return new WaitForSeconds(_tripleShotTime);
