@@ -5,10 +5,16 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _mySpeed = 1f;
+    private float _mySpeed = 5f;
+    [SerializeField]
+    private float _boostedSpeed = 8.5f;
+    private bool _useBoostSpeed = false;
+    [SerializeField]
+    private float _speedDuration = 5f;
+    private Coroutine _speedRoutine;
+
     [SerializeField]
     private int _lives = 3;
-
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _cooldownTime = -1f;
@@ -21,7 +27,7 @@ public class Player : MonoBehaviour
     private GameObject _myTripleLaser;
     [SerializeField]
     private float _tripleShotTime = 5f;
-    private Coroutine tripleShotRoutine;
+    private Coroutine _tripleShotRoutine;
 
     private SpawnManager _spawnManager;
 
@@ -74,17 +80,20 @@ public class Player : MonoBehaviour
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0f);
 
-        // Move the player by "mySpeed" units, every second
-        transform.position += direction * _mySpeed * Time.deltaTime;
+        // NEW, get the player's speed based on whether he is boosting or not
+        float speed = _useBoostSpeed ? _boostedSpeed : _mySpeed;
+
+        // Move the player by "speed" units, every second
+        transform.position += direction * speed * Time.deltaTime;
 
         // clamp player y
         if (transform.position.y > 0)
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
         }
-        else if (transform.position.y < -4.5f)
+        else if (transform.position.y < -4f)
         {
-            transform.position = new Vector3(transform.position.x, -4.5f, 0);
+            transform.position = new Vector3(transform.position.x, -4f, 0);
         }
 
         // screen wrap on x.
@@ -109,15 +118,37 @@ public class Player : MonoBehaviour
 
     public void StartTripleShot()
     {
-        if (tripleShotRoutine != null)
-            StopCoroutine(tripleShotRoutine);
+        if (_tripleShotRoutine != null)
+            StopCoroutine(_tripleShotRoutine);
         _useTripleShot = true;
-        tripleShotRoutine = StartCoroutine(EndTripleShot());
+        _tripleShotRoutine = StartCoroutine(EndTripleShot());
     }
 
     IEnumerator EndTripleShot()
     {
         yield return new WaitForSeconds(_tripleShotTime);
         _useTripleShot = false;
+    }
+
+    public void StartSpeed()
+    {
+        // Activate boosted speed
+        _useBoostSpeed = true;
+
+        // If speed coroutine is going to turn it off,
+        // Cancel that, we can get the full duration
+        if (_speedRoutine != null)
+            StopCoroutine(_speedRoutine);
+
+        // Start the coroutine that will turn off the speed boost
+        _speedRoutine = StartCoroutine(EndSpeed());
+    }
+
+    IEnumerator EndSpeed()
+    {
+        // Wait the duration of the speed boost
+        // Then turn off speed boos
+        yield return new WaitForSeconds(_speedDuration);
+        _useBoostSpeed = false;
     }
 }
