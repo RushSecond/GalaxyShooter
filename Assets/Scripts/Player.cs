@@ -15,13 +15,16 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private int _lives = 3;
+    private bool _useShields = false;
+    [SerializeField]
+    private GameObject _shieldObject;
+
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _cooldownTime = -1f;
 
     [SerializeField]
     private GameObject _myLaser;
-    [SerializeField]
     private bool _useTripleShot = false;
     [SerializeField]
     private GameObject _myTripleLaser;
@@ -106,6 +109,15 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        // if shields are active
+        // deactivate shields
+        // do nothing else
+        if (_useShields)
+        {
+            ToggleShields(false);
+            return;
+        }
+
         _lives--;
 
         if (_lives <= 0)
@@ -114,6 +126,12 @@ public class Player : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    public void ToggleShields(bool shieldOn)
+    {
+        _useShields = shieldOn;
+        _shieldObject.SetActive(shieldOn);
     }
 
     public void StartTripleShot()
@@ -132,22 +150,16 @@ public class Player : MonoBehaviour
 
     public void StartSpeed()
     {
-        // Activate boosted speed
         _useBoostSpeed = true;
 
-        // If speed coroutine is going to turn it off,
-        // Cancel that, we can get the full duration
         if (_speedRoutine != null)
             StopCoroutine(_speedRoutine);
 
-        // Start the coroutine that will turn off the speed boost
         _speedRoutine = StartCoroutine(EndSpeed());
     }
 
     IEnumerator EndSpeed()
     {
-        // Wait the duration of the speed boost
-        // Then turn off speed boos
         yield return new WaitForSeconds(_speedDuration);
         _useBoostSpeed = false;
     }

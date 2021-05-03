@@ -50,7 +50,7 @@ public class Powerup : MonoBehaviour
                 playerScript.StartSpeed();
                 break;
             case 2:
-                Debug.Log("Shield!");
+                playerScript.ToggleShields(true);
                 break;
         }
     }
