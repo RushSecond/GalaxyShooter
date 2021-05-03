@@ -12,9 +12,9 @@ public class Powerup : MonoBehaviour
     // 0 = Triple Shot
     // 1 = Speed
     // 2 = Shields
-    private enum PowerType {TripleShot, Speed, Shields}
+    private enum PowerupType {TripleShot, Speed, Shield}
     [SerializeField]
-    private PowerType _powerupID;
+    private PowerupType _powerupID;
 
     void Update()
     {
@@ -41,30 +41,19 @@ public class Powerup : MonoBehaviour
         if (!playerScript)
             return;
 
-        // if powerUp = 0
-        if ((int)_powerupID == 0)
-            playerScript.StartTripleShot();
-        // if powerUp = 1
-        // Give speed
-        if (_powerupID == PowerType.Speed)
-            playerScript.StartSpeed();
-        // if powerUp = 2
-        // Give shield
-        if ((int)_powerupID == 2)
-            Debug.Log("Shield!");
+        switch ((int)_powerupID)
+        {
+            case 0:
+                playerScript.StartTripleShot();
+                break;
+            case 1:
+                playerScript.StartSpeed();
+                break;
+            case 2:
+                Debug.Log("Shield!");
+                break;
+        }
     }
-
-    /*
-    switch ((int)_powerupID)
-    {
-        case 0:
-            playerScript.StartTripleShot();
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-    }*/
 
 }
 
