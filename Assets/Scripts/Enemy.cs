@@ -6,7 +6,19 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     private float _mySpeed = 4f;
-    
+    [SerializeField]
+    private int _scoreValue = 10;
+
+    private UIManager _UIManager;
+
+    void Start()
+    {
+        // Setup the UI manager
+        _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (!_UIManager)
+            Debug.LogError(this + " an enemy couldn't find the UIManager script.");
+    }
+
     void Update()
     {
         transform.Translate(Vector3.down * _mySpeed * Time.deltaTime);
@@ -31,6 +43,9 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Laser")
         {
+            // Tell the UIManager to add 10 to the score
+            _UIManager.AddScore(_scoreValue);
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
