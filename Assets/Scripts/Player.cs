@@ -33,15 +33,19 @@ public class Player : MonoBehaviour
     private Coroutine _tripleShotRoutine;
 
     private SpawnManager _spawnManager;
+    private UIManager _uIManager;
 
     private float _laserOffsetY = 0.7f;
 
     private void Start()
     {
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-
         if (!_spawnManager)
             Debug.LogError("Spawn Manager is null");
+
+        _uIManager = FindObjectOfType<UIManager>();
+        if (!_uIManager)
+            Debug.LogError("UI Manager is null");
     }
 
     void Update()
@@ -119,6 +123,8 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+
+        _uIManager.UpdateLives(_lives);
 
         if (_lives <= 0)
         {

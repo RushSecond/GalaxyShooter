@@ -7,6 +7,11 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField]
     private Text _scoreText;
+    [SerializeField]
+    private Image _LivesImg;
+    [SerializeField]
+    private Sprite[] _livesSprites;
+
     private int _totalScore;
 
     void Start()
@@ -24,5 +29,10 @@ public class UIManager : MonoBehaviour
     private void UpdateText()
     {
         _scoreText.text = $"Score: {_totalScore}";
+    }
+
+    public void UpdateLives(int currentLives)
+    {
+        _LivesImg.sprite = _livesSprites[currentLives];
     }
 }
