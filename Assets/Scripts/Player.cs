@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     private Coroutine _tripleShotRoutine;
 
     private SpawnManager _spawnManager;
-    private UIManager _uIManager;
+    private UIManager _UIManager;
 
     private float _laserOffsetY = 0.7f;
 
@@ -43,8 +43,8 @@ public class Player : MonoBehaviour
         if (!_spawnManager)
             Debug.LogError("Spawn Manager is null");
 
-        _uIManager = FindObjectOfType<UIManager>();
-        if (!_uIManager)
+        _UIManager = FindObjectOfType<UIManager>();
+        if (!_UIManager)
             Debug.LogError("UI Manager is null");
     }
 
@@ -113,9 +113,6 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        // if shields are active
-        // deactivate shields
-        // do nothing else
         if (_useShields)
         {
             ToggleShields(false);
@@ -124,12 +121,12 @@ public class Player : MonoBehaviour
 
         _lives--;
 
-        _uIManager.UpdateLives(_lives);
+        // Let the UI Manager know the player lost a life
+        _UIManager.UpdateLives(_lives);
 
         if (_lives <= 0)
         {
             _spawnManager.OnPlayerDeath();
-
             Destroy(gameObject);
         }
     }

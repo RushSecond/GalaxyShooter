@@ -11,6 +11,10 @@ public class UIManager : MonoBehaviour
     private Image _LivesImg;
     [SerializeField]
     private Sprite[] _livesSprites;
+    [SerializeField]
+    private Text _gameOverText;
+    [SerializeField]
+    private float _textFlashDelay;
 
     private int _totalScore;
 
@@ -18,6 +22,9 @@ public class UIManager : MonoBehaviour
     {
         _totalScore = 0;
         UpdateText();
+
+        // make sure game over text is turned off
+        _gameOverText.gameObject.SetActive(false);
     }
 
     public void AddScore(int morePoints)
@@ -34,5 +41,23 @@ public class UIManager : MonoBehaviour
     public void UpdateLives(int currentLives)
     {
         _LivesImg.sprite = _livesSprites[currentLives];
+
+        // if lives are zero, activate the game over text
+        if (currentLives <= 0)   
+            StartCoroutine(GameOverFlashingRoutine());
+    }
+
+    IEnumerator GameOverFlashingRoutine()
+    {
+        _gameOverText.gameObject.SetActive(true);
+        WaitForSeconds flashDelay = new WaitForSeconds(_textFlashDelay);
+
+        while(_textFlashDelay > 0.01f) // To avoid infinite loops
+        {
+            yield return flashDelay;
+            _gameOverText.color = Color.red;
+            yield return flashDelay;
+            _gameOverText.color = Color.white;
+        }
     }
 }
