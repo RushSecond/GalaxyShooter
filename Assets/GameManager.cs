@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
         // if player presses restart button and the game is over, reload the scene
         if (Input.GetButton("Restart") && _gameOver == true)
         {
-            SceneManager.LoadScene(0); // 0 is the game scene
+            SceneManager.LoadScene(1); // 1 is the game scene now
         }
     }
 
