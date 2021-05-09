@@ -46,6 +46,15 @@ TagManager:
   - name: Background
     uniqueID: 85175559
     locked: 0
-  - name: Foreground
+  - name: Enemies
     uniqueID: 4210110405
+    locked: 0
+  - name: Powerup
+    uniqueID: 943811133
+    locked: 0
+  - name: Laser
+    uniqueID: 2341104861
+    locked: 0
+  - name: Player
+    uniqueID: 1013307621
     locked: 0

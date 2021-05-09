@@ -20,7 +20,7 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
-    void Start()
+    public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
@@ -29,6 +29,7 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawnEnemyRoutine()
     { 
         WaitForSeconds waitSeconds = new WaitForSeconds(_spawnTime);
+        yield return new WaitForSeconds(2f);
 
         while (!_stopSpawning)
         {
