@@ -7,11 +7,6 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 3f;
 
-
-    //ID for powerups
-    // 0 = Triple Shot
-    // 1 = Speed
-    // 2 = Shields
     private enum PowerupType {TripleShot, Speed, Shield}
     [SerializeField]
     private PowerupType _powerupID;
