@@ -67,6 +67,6 @@ public class Enemy : MonoBehaviour
         _myAnimator.SetTrigger("OnEnemyDeath");
 
         // Destroy after 5 seconds so the animation can play
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, 2.8f);
     }
 }
