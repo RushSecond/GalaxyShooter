@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     private bool _useShields = false;
     [SerializeField]
     private GameObject _shieldObject;
+    [SerializeField]
+    private GameObject[] _damageEffectObjects;
 
     [SerializeField]
     private float _fireRate = 0.5f;
@@ -120,14 +122,20 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
-
-        // Let the UI Manager know the player lost a life
         _UIManager.UpdateLives(_lives);
 
-        if (_lives <= 0)
+        switch(_lives) // Effects on taking damage
         {
-            _spawnManager.OnPlayerDeath();
-            Destroy(gameObject);
+            case 2:
+                _damageEffectObjects[0].SetActive(true);
+                break;
+            case 1:
+                _damageEffectObjects[1].SetActive(true);
+                break;
+            case 0:
+                _spawnManager.OnPlayerDeath();
+                Destroy(gameObject);
+                break;
         }
     }
 
