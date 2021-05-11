@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
 
     private SpawnManager _spawnManager;
     private UIManager _UIManager;
+    private AudioSource _laserAudio;
 
     private float _laserOffsetY = 0.7f;
 
@@ -48,6 +49,10 @@ public class Player : MonoBehaviour
         _UIManager = FindObjectOfType<UIManager>();
         if (!_UIManager)
             Debug.LogError("UI Manager is null");
+
+        _laserAudio = GetComponent<AudioSource>();
+        if (!_laserAudio)
+            Debug.LogError("Player audio is null");
     }
 
     void Update()
@@ -80,6 +85,7 @@ public class Player : MonoBehaviour
         }
 
         _cooldownTime = _fireRate;
+        _laserAudio.Play();
     }
 
     void CalculateMovement()
