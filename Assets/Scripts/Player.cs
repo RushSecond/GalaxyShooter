@@ -24,9 +24,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _cooldownTime = -1f;
-
     [SerializeField]
     private GameObject _myLaser;
+    private float _laserOffsetY = 0.7f;
     private bool _useTripleShot = false;
     [SerializeField]
     private GameObject _myTripleLaser;
@@ -34,11 +34,13 @@ public class Player : MonoBehaviour
     private float _tripleShotTime = 5f;
     private Coroutine _tripleShotRoutine;
 
+
     private SpawnManager _spawnManager;
     private UIManager _UIManager;
-    private AudioSource _laserAudio;
 
-    private float _laserOffsetY = 0.7f;
+    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioClip _laserAudio;
 
     private void Start()
     {
@@ -50,8 +52,8 @@ public class Player : MonoBehaviour
         if (!_UIManager)
             Debug.LogError("UI Manager is null");
 
-        _laserAudio = GetComponent<AudioSource>();
-        if (!_laserAudio)
+        _audioSource = GetComponent<AudioSource>();
+        if (!_audioSource)
             Debug.LogError("Player audio is null");
     }
 
@@ -85,7 +87,8 @@ public class Player : MonoBehaviour
         }
 
         _cooldownTime = _fireRate;
-        _laserAudio.Play();
+        _audioSource.clip = _laserAudio;
+        _audioSource.Play();
     }
 
     void CalculateMovement()
