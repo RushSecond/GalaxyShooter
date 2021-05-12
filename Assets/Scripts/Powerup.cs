@@ -10,6 +10,10 @@ public class Powerup : MonoBehaviour
     private enum PowerupType {TripleShot, Speed, Shield}
     [SerializeField]
     private PowerupType _powerupID;
+    [SerializeField]
+    private AudioClip _powerupAudio;
+    [SerializeField]
+    private float _audioVolume = 0.6f;
 
     void Update()
     {
@@ -27,14 +31,16 @@ public class Powerup : MonoBehaviour
         {
             Player playerScript = other.GetComponent<Player>();
             GrantPowerup(playerScript);
-            Destroy(gameObject);
         }
     }
 
     private void GrantPowerup(Player playerScript)
     {
         if (!playerScript)
+        {
+            Debug.LogError(this + " couldn't find the player script on something tagged as player");
             return;
+        }
 
         switch ((int)_powerupID)
         {
@@ -48,7 +54,9 @@ public class Powerup : MonoBehaviour
                 playerScript.ToggleShields(true);
                 break;
         }
-    }
 
+        AudioSource.PlayClipAtPoint(_powerupAudio, Camera.main.transform.position, _audioVolume);
+        Destroy(gameObject);
+    }
 }
 
