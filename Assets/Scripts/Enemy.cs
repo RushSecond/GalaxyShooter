@@ -8,10 +8,11 @@ public class Enemy : MonoBehaviour
     private float _mySpeed = 4f;
     [SerializeField]
     private int _scoreValue = 10;
+    [SerializeField]
+    private AudioClip _explosionSound;
+    private AudioSource _audioSource;
 
     private UIManager _UIManager;
-
-    // Animator component
     private Animator _myAnimator;
 
     void Start()
@@ -20,10 +21,13 @@ public class Enemy : MonoBehaviour
         if (!_UIManager)
             Debug.LogError(this + " an enemy couldn't find the UIManager script.");
         
-        // Setup and null check
         _myAnimator = GetComponent<Animator>();
         if (!_myAnimator)
             Debug.LogError(this + " an enemy doesn't have an animator.");
+
+        _audioSource = GetComponent<AudioSource>();
+        if (!_audioSource)
+            Debug.LogError(this + " an enemy doesn't have an audio source.");
     }
 
     void Update()
@@ -63,7 +67,9 @@ public class Enemy : MonoBehaviour
         _mySpeed = 0f;
         GetComponent<Collider2D>().enabled = false;
 
-        // Play animation
+        // Play animation and sound
+        _audioSource.clip = _explosionSound;
+        _audioSource.Play();
         _myAnimator.SetTrigger("OnEnemyDeath");
 
         // Destroy after 5 seconds so the animation can play
