@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     private GameObject _shieldObject;
     [SerializeField]
     private GameObject[] _damageEffectObjects;
+    [SerializeField]
+    private GameObject _explosion;
 
     [SerializeField]
     private float _fireRate = 0.5f;
@@ -87,6 +89,7 @@ public class Player : MonoBehaviour
         }
 
         _cooldownTime = _fireRate;
+
         _audioSource.clip = _laserAudio;
         _audioSource.Play();
     }
@@ -142,10 +145,22 @@ public class Player : MonoBehaviour
                 _damageEffectObjects[1].SetActive(true);
                 break;
             case 0:
-                _spawnManager.OnPlayerDeath();
-                Destroy(gameObject);
+                PlayerDeath();
                 break;
         }
+    }
+
+    void PlayerDeath()
+    {
+        _spawnManager.OnPlayerDeath();
+
+        // Stop movement
+        _mySpeed = 0f;
+        _boostedSpeed = 0f;
+
+        //Create explosion and destroy player
+        Instantiate(_explosion, transform.position, Quaternion.identity);
+        Destroy(gameObject, 0.3f);
     }
 
     public void ToggleShields(bool shieldOn)
