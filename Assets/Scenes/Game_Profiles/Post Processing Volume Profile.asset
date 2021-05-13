@@ -45,15 +45,15 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   ldrLut:
-    overrideState: 1
+    overrideState: 0
     value: {fileID: 0}
     defaultState: 4
   ldrLutContribution:
-    overrideState: 1
+    overrideState: 0
     value: 1
   temperature:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 6
   tint:
     overrideState: 0
     value: 0
