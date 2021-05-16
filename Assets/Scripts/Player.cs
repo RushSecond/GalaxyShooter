@@ -5,10 +5,18 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _mySpeed = 5f;
+    private float _baseSpeed = 3f;
     [SerializeField]
-    private float _boostedSpeed = 8.5f;
-    private bool _useBoostSpeed = false;
+    private float _thrusterSpeed = 6f;
+    [SerializeField]
+    private Transform _thrusterTransform;
+    [SerializeField]
+    private float _thrusterSizeMultiplier = 1.8f;
+    private Vector3 _thrusterScaling;
+    [SerializeField]
+    private float _speedPowerupMutliplier = 1.6f;
+
+    private bool _speedPowerupActive = false;
     [SerializeField]
     private float _speedDuration = 5f;
     private Coroutine _speedRoutine;
@@ -103,8 +111,21 @@ public class Player : MonoBehaviour
 
         Vector3 direction = Vector3.Normalize(new Vector3(horizontalInput, verticalInput, 0f));
 
-        // NEW, get the player's speed based on whether he is boosting or not
-        float speed = _useBoostSpeed ? _boostedSpeed : _mySpeed;
+        // NEW, get the player's speed based on whether he is thrusting or not
+        float speed;
+        if (Input.GetAxis("Thrusters") == 1)
+        {
+            speed = _thrusterSpeed;
+            _thrusterTransform.localScale = Vector3.one * _thrusterSizeMultiplier;
+        }
+        else
+        {
+            speed = _baseSpeed;
+            _thrusterTransform.localScale = Vector3.one;
+        }
+
+        // Multiply player speed if powerup is active
+        if (_speedPowerupActive) speed *= _speedPowerupMutliplier;
 
         // Move the player by "speed" units, every second
         transform.position += direction * speed * Time.deltaTime;
@@ -152,8 +173,8 @@ public class Player : MonoBehaviour
         _spawnManager.OnPlayerDeath();
 
         // Stop movement
-        _mySpeed = 0f;
-        _boostedSpeed = 0f;
+        _baseSpeed = 0f;
+        _thrusterSpeed = 0f;
 
         //Create explosion and destroy player
         Instantiate(_explosion, transform.position, Quaternion.identity);
@@ -182,7 +203,7 @@ public class Player : MonoBehaviour
 
     public void StartSpeed()
     {
-        _useBoostSpeed = true;
+        _speedPowerupActive = true;
 
         if (_speedRoutine != null)
             StopCoroutine(_speedRoutine);
@@ -193,6 +214,6 @@ public class Player : MonoBehaviour
     IEnumerator EndSpeed()
     {
         yield return new WaitForSeconds(_speedDuration);
-        _useBoostSpeed = false;
+        _speedPowerupActive = false;
     }
 }
