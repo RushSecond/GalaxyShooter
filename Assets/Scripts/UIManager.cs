@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
 
     IEnumerator GameOverRoutine()
     {
-        _gameManager.GameOver();
+        _gameManager.OnGameOver();
         _gameOverText.gameObject.SetActive(true);
         _restartText.gameObject.SetActive(true);
         WaitForSeconds flashDelay = new WaitForSeconds(_textFlashDelay);

@@ -14,7 +14,7 @@ public class Laser : MonoBehaviour
 
         // if the laser y position is greater than 5.5f, destroy it
         // and destroy parent too if it has one
-        if (transform.position.y > 5.5f)
+        if (Mathf.Abs(transform.position.y) > 6.0f)
         {
             Transform myParent = transform.parent;
             if (transform.parent)
@@ -23,5 +23,22 @@ public class Laser : MonoBehaviour
             }
             Destroy(gameObject);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Handle collision with player
+        if (tag == "EnemyLaser" && other.gameObject.tag == "Player")
+        {
+            Player playerScript = other.GetComponent<Player>();
+            HurtPlayer(playerScript);
+        }
+    }
+
+    void HurtPlayer(Player playerScript)
+    {
+        if (!playerScript) return;
+        playerScript.OnTakeDamage();
+        Destroy(gameObject);
     }
 }

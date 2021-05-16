@@ -9,14 +9,21 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // if player presses restart button and the game is over, reload the scene
         if (Input.GetButton("Restart") && _gameOver == true)
         {
             SceneManager.LoadScene(1); // 1 is the game scene now
         }
+
+        #if UNITY_STANDALONE
+        // NEW: if player presses exit button (escape or back), exit the game
+        if (Input.GetButton("Cancel"))
+        {
+            Application.Quit();
+        }
+        #endif
     }
 
-    public void GameOver()
+    public void OnGameOver()
     {
         _gameOver = true;
     }

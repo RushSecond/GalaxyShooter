@@ -519,7 +519,6 @@ MonoBehaviour:
   _myTripleLaser: {fileID: 7715632764734317057, guid: d488c9bfda6dc354a9593d5ca26c6fe6, type: 3}
   _tripleShotTime: 5
   _laserAudio: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _powerupAudio: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
 --- !u!61 &722035137
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1465,7 +1464,7 @@ Camera:
   m_GameObject: {fileID: 1845438608}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2

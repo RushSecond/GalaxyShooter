@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Damage()
+    public void OnTakeDamage()
     {
         if (_useShields)
         {
