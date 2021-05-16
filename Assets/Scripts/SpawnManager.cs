@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    public static float _screenBoundsX = 9f;
+    public static float _screenBoundsX = 9.7f;
     [SerializeField]
     public static float _screenBoundsY = 4.5f;
 

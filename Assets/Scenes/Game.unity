@@ -508,6 +508,7 @@ MonoBehaviour:
   _mySpeed: 5
   _boostedSpeed: 8.5
   _speedDuration: 5
+  _screenWrapY: 5.1
   _lives: 3
   _shieldObject: {fileID: 884429075}
   _damageEffectObjects:

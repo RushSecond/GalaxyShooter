@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speedDuration = 5f;
     private Coroutine _speedRoutine;
+    [SerializeField]
+    private float _screenWrapY = 5.2f;
 
     [SerializeField]
     private int _lives = 3;
@@ -112,9 +114,9 @@ public class Player : MonoBehaviour
         
         // screen wrap on y.
         float yPosition = transform.position.y;
-        if (Mathf.Abs(yPosition) > 5.3f)
+        if (Mathf.Abs(yPosition) > _screenWrapY)
         {
-            yPosition = -5.3f * Mathf.Sign(yPosition);
+            yPosition = -_screenWrapY * Mathf.Sign(yPosition);
         }
 
         transform.position = new Vector3(xPosition, yPosition, 0);
