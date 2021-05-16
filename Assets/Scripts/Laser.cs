@@ -9,12 +9,12 @@ public class Laser : MonoBehaviour
 
     void Update()
     {
-        // move up by my speed every second
+        // move right by my speed every second
         transform.Translate(Vector3.up * _mySpeed * Time.deltaTime);
 
         // if the laser y position is greater than 5.5f, destroy it
         // and destroy parent too if it has one
-        if (Mathf.Abs(transform.position.y) > 6.0f)
+        if (Mathf.Abs(transform.position.x) > SpawnManager._screenBoundsX)
         {
             Transform myParent = transform.parent;
             if (transform.parent)

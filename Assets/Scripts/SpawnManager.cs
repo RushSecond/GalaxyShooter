@@ -5,9 +5,9 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    private static float _screenBoundsX = 8.5f;
+    public static float _screenBoundsX = 9f;
     [SerializeField]
-    private static float _screenBoundsY = 5.8f;
+    public static float _screenBoundsY = 4.5f;
 
     [SerializeField]
     private float _spawnTime = 5f;
@@ -33,7 +33,7 @@ public class SpawnManager : MonoBehaviour
 
         while (!_stopSpawning)
         {
-            GameObject newEnemy = Instantiate(_spawnEnemy, RandomPositionAtTop(), Quaternion.identity);
+            GameObject newEnemy = Instantiate(_spawnEnemy, RandomPositionAtRight(), Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
             yield return waitSeconds;
         }
@@ -48,7 +48,7 @@ public class SpawnManager : MonoBehaviour
             yield return waitRandomSeconds;
             
             int randomIndex = Random.Range(0, 3);
-            GameObject newPowerup = Instantiate(_powerups[randomIndex], RandomPositionAtTop(), Quaternion.identity);
+            GameObject newPowerup = Instantiate(_powerups[randomIndex], RandomPositionAtRight(), Quaternion.identity);
         }
     }
 
@@ -58,12 +58,12 @@ public class SpawnManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets a a random point at the top of the screen
+    /// Gets a a random point at the right of the screen
     /// </summary>
-    public static Vector3 RandomPositionAtTop()
+    public static Vector3 RandomPositionAtRight()
     {
-        float xPosition = Random.Range(-_screenBoundsX, _screenBoundsX);
-        float yPosition = _screenBoundsY;
+        float xPosition = _screenBoundsX;
+        float yPosition = Random.Range(-_screenBoundsY, _screenBoundsY);
         return new Vector3(xPosition, yPosition, 0);
     }
 }

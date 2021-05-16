@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     private float _cooldownTime = -1f;
     [SerializeField]
     private GameObject _myLaser;
-    private float _laserOffsetY = 0.7f;
+    private float _laserOffsetX = 0.7f;
     private bool _useTripleShot = false;
     [SerializeField]
     private GameObject _myTripleLaser;
@@ -79,13 +79,13 @@ public class Player : MonoBehaviour
         if(_useTripleShot)
         {
             Vector3 tripleLaserPosition = transform.position;
-            GameObject.Instantiate(_myTripleLaser, tripleLaserPosition, Quaternion.identity);
+            GameObject.Instantiate(_myTripleLaser, tripleLaserPosition, transform.rotation);
         }
         //else fire the single laser
         else
         {
-            Vector3 laserPosition = transform.position + new Vector3(0, _laserOffsetY, 0);
-            GameObject.Instantiate(_myLaser, laserPosition, Quaternion.identity);
+            Vector3 laserPosition = transform.position + new Vector3(_laserOffsetX, 0, 0);
+            GameObject.Instantiate(_myLaser, laserPosition, transform.rotation);
         }
 
         _cooldownTime = _fireRate;
@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0f);
+        Vector3 direction = Vector3.Normalize(new Vector3(horizontalInput, verticalInput, 0f));
 
         // NEW, get the player's speed based on whether he is boosting or not
         float speed = _useBoostSpeed ? _boostedSpeed : _mySpeed;
@@ -107,22 +107,17 @@ public class Player : MonoBehaviour
         // Move the player by "speed" units, every second
         transform.position += direction * speed * Time.deltaTime;
 
-        // clamp player y
-        if (transform.position.y > 0)
+        // clamp player x
+        float xPosition = Mathf.Clamp(transform.position.x, -7.5f, 0f);
+        
+        // screen wrap on y.
+        float yPosition = transform.position.y;
+        if (Mathf.Abs(yPosition) > 5.3f)
         {
-            transform.position = new Vector3(transform.position.x, 0, 0);
-        }
-        else if (transform.position.y < -4f)
-        {
-            transform.position = new Vector3(transform.position.x, -4f, 0);
+            yPosition = -5.3f * Mathf.Sign(yPosition);
         }
 
-        // screen wrap on x.
-        float xPosition = transform.position.x;
-        if (Mathf.Abs(xPosition) > 9.4f)
-        {
-            transform.position = new Vector3(-9.4f * Mathf.Sign(xPosition), transform.position.y, 0);
-        }
+        transform.position = new Vector3(xPosition, yPosition, 0);
     }
 
     public void OnTakeDamage()

@@ -17,9 +17,9 @@ public class Powerup : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.down * _mySpeed * Time.deltaTime);
+        transform.Translate(Vector3.left * _mySpeed * Time.deltaTime);
 
-        if (transform.position.y <= -6)
+        if (transform.position.x <= -SpawnManager._screenBoundsX)
         {
             Destroy(gameObject);
         }

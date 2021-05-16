@@ -8,8 +8,7 @@ public class Enemy : MonoBehaviour
     private float _mySpeed = 4f;
     [SerializeField]
     private GameObject _enemyLaser;
-    [SerializeField]
-    private float _laserYOffset = -1f;
+    private float _laserOffsetX = -1f;
     private Coroutine fireRoutine;
     [SerializeField]
     private int _scoreValue = 10;
@@ -45,9 +44,9 @@ public class Enemy : MonoBehaviour
 
         // if bottom of screen
         // respawn at top with a new random xPosition
-        if (transform.position.y <= -5.8f)
+        if (transform.position.x <= -SpawnManager._screenBoundsX)
         {
-            transform.position = SpawnManager.RandomPositionAtTop();
+            transform.position = SpawnManager.RandomPositionAtRight();
         }
     }
 
@@ -90,13 +89,13 @@ public class Enemy : MonoBehaviour
 
     IEnumerator FireLaserRoutine()
     {
-        Vector3 laserOffset = new Vector3(0, _laserYOffset, 0);
+        Vector3 laserOffset = new Vector3(_laserOffsetX, 0, 0);
         while (true)
         {
             int fireTime = Random.Range(3, 8);
             yield return new WaitForSeconds(fireTime);
 
-            Instantiate(_enemyLaser, transform.position + laserOffset, Quaternion.identity);
+            Instantiate(_enemyLaser, transform.position + laserOffset, transform.rotation);
             _audioSource.clip = _laserAudio;
             _audioSource.Play();
         }
