@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    
     [SerializeField]
     private Text _scoreText;
     [SerializeField]
@@ -17,7 +18,24 @@ public class UIManager : MonoBehaviour
     private Text _restartText;
     [SerializeField]
     private float _textFlashDelay;
-    
+
+    [SerializeField]
+    private Slider _heatGauge;
+    [SerializeField]
+    private Image _heatFillImage;
+    [SerializeField]
+    private Color _overheatOriginalColor;
+    [SerializeField]
+    private Color _overHeatFlashColor;
+
+    [SerializeField]
+    private Text _heatText;
+    [SerializeField]
+    private string _overheatString = "Overheating!";
+    [SerializeField]
+    private string _normalHeatString = "Thruster Heat";
+    private bool _overheatRoutine = false;
+
     private int _totalScore;
     private GameManager _gameManager;
 
@@ -32,6 +50,8 @@ public class UIManager : MonoBehaviour
         _gameManager = FindObjectOfType<GameManager>();
         if (!_gameManager)
             Debug.LogError("UI Manager couldn't find Game Manager");
+
+        ResetHeatGauge();
     }
 
     public void AddScore(int morePoints)
@@ -67,5 +87,42 @@ public class UIManager : MonoBehaviour
             yield return flashDelay;
             _gameOverText.color = Color.white;
         }
+    }
+
+    public void UpdateHeatGauge(float gaugeAmount)
+    {
+        _heatGauge.value = gaugeAmount;
+
+        //Overheat when gauge is full
+        if (gaugeAmount >= 1)
+        {
+            _heatText.text = _overheatString;
+            _overheatRoutine = true;
+            StartCoroutine(OverheatingRoutine());
+        }
+
+        //Stop overheating when gauge is empty
+        if (gaugeAmount <= 0 && _overheatRoutine)
+        {
+            ResetHeatGauge();
+        }
+    }
+
+    void ResetHeatGauge()
+    {
+        _heatText.text = _normalHeatString;
+        _overheatRoutine = false;
+    }
+
+    IEnumerator OverheatingRoutine()
+    {
+        WaitForSeconds flashTime = new WaitForSeconds(0.3f);
+        while (_overheatRoutine)
+        {
+            _heatFillImage.color = _overHeatFlashColor;
+            yield return flashTime;
+            _heatFillImage.color = _overheatOriginalColor;
+            yield return flashTime;
+        }       
     }
 }

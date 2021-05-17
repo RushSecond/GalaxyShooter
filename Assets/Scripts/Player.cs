@@ -12,9 +12,16 @@ public class Player : MonoBehaviour
     private Transform _thrusterTransform;
     [SerializeField]
     private float _thrusterSizeMultiplier = 1.8f;
-    private Vector3 _thrusterScaling;
     [SerializeField]
     private float _speedPowerupMutliplier = 1.6f;
+
+
+    private float _heatAmount = 0f;
+    private bool _overheating = false;
+    [SerializeField]
+    private float _heatGainedPerSecond = 0.25f;
+    [SerializeField]
+    private float _heatLostPerSecond = 0.125f;
 
     private bool _speedPowerupActive = false;
     [SerializeField]
@@ -111,18 +118,9 @@ public class Player : MonoBehaviour
 
         Vector3 direction = Vector3.Normalize(new Vector3(horizontalInput, verticalInput, 0f));
 
-        // NEW, get the player's speed based on whether he is thrusting or not
-        float speed;
-        if (Input.GetAxis("Thrusters") == 1)
-        {
-            speed = _thrusterSpeed;
-            _thrusterTransform.localScale = Vector3.one * _thrusterSizeMultiplier;
-        }
-        else
-        {
-            speed = _baseSpeed;
-            _thrusterTransform.localScale = Vector3.one;
-        }
+        // NEW, get the player's speed based on whether he is thrusting and moving
+        bool isMoving = direction.magnitude >= .01f;
+        float speed = CheckThrusters(isMoving);
 
         // Multiply player speed if powerup is active
         if (_speedPowerupActive) speed *= _speedPowerupMutliplier;
@@ -141,6 +139,30 @@ public class Player : MonoBehaviour
         }
 
         transform.position = new Vector3(xPosition, yPosition, 0);
+    }
+
+    float CheckThrusters(bool isMoving)
+    {
+        float speed;
+        if (Input.GetAxis("Thrusters") == 1 && !_overheating && isMoving)
+        { // Increase speed and heat, make thruster image larger
+            speed = _thrusterSpeed;
+            _heatAmount += _heatGainedPerSecond * Time.deltaTime;
+            _thrusterTransform.localScale = Vector3.one * _thrusterSizeMultiplier;
+            if (_heatAmount > 1f) _overheating = true;
+        }
+        else
+        {
+            speed = _baseSpeed;
+            _heatAmount -= _heatLostPerSecond * Time.deltaTime;
+            _thrusterTransform.localScale = Vector3.one;
+            if (_heatAmount < 0f) _overheating = false;
+        }
+
+        _heatAmount = Mathf.Clamp(_heatAmount, 0f, 1f); // Make sure heat stays between 0 and 1
+        _UIManager.UpdateHeatGauge(_heatAmount);
+
+        return speed;
     }
 
     public void OnTakeDamage()
