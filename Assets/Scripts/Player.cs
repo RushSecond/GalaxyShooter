@@ -32,9 +32,14 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private int _lives = 3;
-    private bool _useShields = false;
+    private int _shieldHP = 0;
+    [SerializeField]
+    private int _shieldMaxHP = 3;
     [SerializeField]
     private GameObject _shieldObject;
+    [SerializeField]
+    private Color _shieldColorOriginal;
+
     [SerializeField]
     private GameObject[] _damageEffectObjects;
     [SerializeField]
@@ -52,7 +57,6 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _tripleShotTime = 5f;
     private Coroutine _tripleShotRoutine;
-
 
     private SpawnManager _spawnManager;
     private UIManager _UIManager;
@@ -167,9 +171,9 @@ public class Player : MonoBehaviour
 
     public void OnTakeDamage()
     {
-        if (_useShields)
+        if (_shieldHP > 0) // Shields take damage
         {
-            ToggleShields(false);
+            ShieldDamage();
             return;
         }
 
@@ -190,6 +194,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    void ShieldDamage()
+    {
+        _shieldHP--;
+        if (_shieldHP == 0)
+        {
+            ToggleShields(false);
+            return;
+        }
+
+        // Change the color of the shield object to be less bright 
+        float fractionOfShieldRemaining = (float)_shieldHP / (float)_shieldMaxHP;
+        Color newShieldColor = Color.Lerp(Color.black, _shieldColorOriginal, fractionOfShieldRemaining);
+        _shieldObject.GetComponent<SpriteRenderer>().color = newShieldColor;
+    }
+
     void PlayerDeath()
     {
         _spawnManager.OnPlayerDeath();
@@ -204,9 +223,13 @@ public class Player : MonoBehaviour
     }
 
     public void ToggleShields(bool shieldOn)
-    {
-        _useShields = shieldOn;
+    {  
         _shieldObject.SetActive(shieldOn);
+        if (shieldOn)
+        {
+            _shieldHP = _shieldMaxHP;
+            _shieldObject.GetComponent<SpriteRenderer>().color = _shieldColorOriginal;
+        }
     }
 
     public void StartTripleShot()
