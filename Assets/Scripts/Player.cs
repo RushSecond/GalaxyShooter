@@ -47,10 +47,14 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float _fireRate = 0.5f;
-    private float _cooldownTime = -1f;
+    private float _laserCooldownTime = -1f;
     [SerializeField]
     private GameObject _myLaser;
     private float _laserOffsetX = 0.7f;
+    [SerializeField]
+    private int _ammoMaximum = 15;
+    private int _ammoCurrent;
+
     private bool _useTripleShot = false;
     [SerializeField]
     private GameObject _myTripleLaser;
@@ -78,15 +82,18 @@ public class Player : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         if (!_audioSource)
             Debug.LogError("Player audio is null");
+
+        GainAmmo();
     }
 
     void Update()
     {
         // Reduce the cooldown time
-        _cooldownTime -= Time.deltaTime;
+        _laserCooldownTime -= Time.deltaTime;
 
-        // If fire button is pressed --AND no cooldown is remaining-- then create a laser, and reset the cooldown
-        if (Input.GetButton("Fire1") && _cooldownTime <= 0f)
+        // If fire button is pressed, no cooldown is remaining, and there's ammo,
+        // then fire a laser
+        if (Input.GetButton("Fire1") && _laserCooldownTime <= 0f && _ammoCurrent > 0)
         {
             FireLaser();
         }
@@ -102,14 +109,15 @@ public class Player : MonoBehaviour
             Vector3 tripleLaserPosition = transform.position;
             GameObject.Instantiate(_myTripleLaser, tripleLaserPosition, transform.rotation);
         }
-        //else fire the single laser
-        else
+        else //else fire the single laser
         {
             Vector3 laserPosition = transform.position + new Vector3(_laserOffsetX, 0, 0);
             GameObject.Instantiate(_myLaser, laserPosition, transform.rotation);
         }
 
-        _cooldownTime = _fireRate;
+        _laserCooldownTime = _fireRate; // reset fire cooldown
+        _ammoCurrent--; // reduce ammo and tell the UI Manager
+        _UIManager.UpdateAmmoCount(_ammoCurrent);
 
         _audioSource.clip = _laserAudio;
         _audioSource.Play();
@@ -260,5 +268,11 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(_speedDuration);
         _speedPowerupActive = false;
+    }
+
+    public void GainAmmo()
+    {
+        _ammoCurrent = _ammoMaximum;
+        _UIManager.UpdateAmmoCount(_ammoCurrent);
     }
 }

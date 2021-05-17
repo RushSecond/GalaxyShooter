@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite[] _livesSprites;
     [SerializeField]
+    private Text _ammoText;
+    private bool _ammoEmpty;
+
+    [SerializeField]
     private Text _gameOverText;
     [SerializeField]
     private Text _restartText;
@@ -80,7 +84,7 @@ public class UIManager : MonoBehaviour
         _restartText.gameObject.SetActive(true);
         WaitForSeconds flashDelay = new WaitForSeconds(_textFlashDelay);
 
-        while(_textFlashDelay > 0.01f) // To avoid infinite loops
+        while(_textFlashDelay > 0.05f) // To avoid infinite loops
         {
             yield return flashDelay;
             _gameOverText.color = Color.red;
@@ -124,5 +128,31 @@ public class UIManager : MonoBehaviour
             _heatFillImage.color = _overheatOriginalColor;
             yield return flashTime;
         }       
+    }
+
+    public void UpdateAmmoCount(int ammoCount)
+    {
+        _ammoText.text = $"Ammo: {ammoCount}";
+
+        if (ammoCount <= 0)
+        {
+            _ammoEmpty = true;
+            StartCoroutine(AmmoEmptyRoutine());
+            return;
+        }
+
+        _ammoEmpty = false;
+    }
+
+    IEnumerator AmmoEmptyRoutine()
+    {
+        WaitForSeconds flashDelay = new WaitForSeconds(_textFlashDelay);
+        while (_ammoEmpty && _textFlashDelay >= 0.05f)
+        {
+            _ammoText.color = Color.red;
+            yield return flashDelay;
+            _ammoText.color = Color.white;
+            yield return flashDelay;
+        }
     }
 }
