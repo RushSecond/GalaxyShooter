@@ -515,7 +515,7 @@ MonoBehaviour:
   _speedDuration: 5
   _screenWrapY: 5.1
   _lives: 3
-  _shieldMaxHP: 1
+  _shieldMaxHP: 3
   _shieldObject: {fileID: 884429075}
   _shieldColorOriginal: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
   _damageEffectObjects:

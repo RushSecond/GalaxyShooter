@@ -116,6 +116,7 @@ public class Player : MonoBehaviour
         }
 
         _laserCooldownTime = _fireRate; // reset fire cooldown
+
         _ammoCurrent--; // reduce ammo and tell the UI Manager
         _UIManager.UpdateAmmoCount(_ammoCurrent);
 

@@ -144,7 +144,7 @@ public class UIManager : MonoBehaviour
         _ammoEmpty = false;
     }
 
-    IEnumerator AmmoEmptyRoutine()
+    IEnumerator AmmoEmptyRoutine() // causes ammo text to flash red
     {
         WaitForSeconds flashDelay = new WaitForSeconds(_textFlashDelay);
         while (_ammoEmpty && _textFlashDelay >= 0.05f)
