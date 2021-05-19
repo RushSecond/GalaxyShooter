@@ -7,7 +7,7 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 3f;
 
-    private enum PowerupType {TripleShot, Speed, Shield}
+    private enum PowerupType {TripleShot, Speed, Shield, Ammo}
     [SerializeField]
     private PowerupType _powerupID;
     [SerializeField]
@@ -38,7 +38,7 @@ public class Powerup : MonoBehaviour
     {
         if (!playerScript)
         {
-            Debug.LogError(this + " couldn't find the player script on something tagged as player");
+            Debug.LogError(this + " couldn't find the player script");
             return;
         }
 
@@ -52,6 +52,9 @@ public class Powerup : MonoBehaviour
                 break;
             case 2:
                 playerScript.ToggleShields(true);
+                break;
+            case 3:
+                playerScript.GainAmmo();
                 break;
         }
 

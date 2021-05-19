@@ -41,14 +41,13 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerupRoutine()
     {
-        // every 3-7 seconds, spawn in a powerup
+        // every 3-7 seconds, spawn a powerup
         while (!_stopSpawning)
         {
-            WaitForSeconds waitRandomSeconds = new WaitForSeconds(Random.Range(3, 8));
-            yield return waitRandomSeconds;
+            yield return new WaitForSeconds(Random.Range(3, 8));
             
-            int randomIndex = Random.Range(0, 3);
-            GameObject newPowerup = Instantiate(_powerups[randomIndex], RandomPositionAtRight(), Quaternion.identity);
+            int randomIndex = Random.Range(0, _powerups.Length);
+            Instantiate(_powerups[randomIndex], RandomPositionAtRight(), Quaternion.identity);
         }
     }
 
