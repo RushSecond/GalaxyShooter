@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5b8fe76c2553543bd1bfe150e46edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnTime: 1.5
+  _spawnTime: 2
   _spawnEnemy: {fileID: 8579086677366891526, guid: 9fc16c75ca465a24c82dbc5f7959623f, type: 3}
   _enemyContainer: {fileID: 1677023692}
   _powerups:
@@ -160,6 +160,7 @@ MonoBehaviour:
   - {fileID: 2360029793824657561, guid: 4c1784ddbc5b661479f110137fea6fe1, type: 3}
   - {fileID: 7240325036429401041, guid: a1677583c4430ff4c9a6241b97070a68, type: 3}
   - {fileID: 5199126160220301782, guid: 9364caf70185e9a44a4fbd02681773b7, type: 3}
+  - {fileID: 5363682039920045214, guid: 4fd59386ce30ba241909fd4a7e6f0965, type: 3}
 --- !u!4 &161326483
 Transform:
   m_ObjectHideFlags: 0
@@ -515,7 +516,7 @@ MonoBehaviour:
   _heatLostPerSecond: 0.125
   _speedDuration: 5
   _screenWrapY: 5.1
-  _lives: 3
+  _maxLives: 3
   _shieldMaxHP: 3
   _shieldObject: {fileID: 884429075}
   _shieldColorOriginal: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}

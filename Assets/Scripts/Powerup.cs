@@ -7,13 +7,19 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 3f;
 
-    private enum PowerupType {TripleShot, Speed, Shield, Ammo}
+    private enum PowerupType {TripleShot, Speed, Shield, Ammo, Repair}
     [SerializeField]
     private PowerupType _powerupID;
     [SerializeField]
     private AudioClip _powerupAudio;
     [SerializeField]
     private float _audioVolume = 0.6f;
+
+    private void Start()
+    {
+        if (_powerupAudio == null)
+            Debug.LogError(this + " powerup audio is not assigned.");
+    }
 
     void Update()
     {
@@ -55,6 +61,9 @@ public class Powerup : MonoBehaviour
                 break;
             case 3:
                 playerScript.GainAmmo();
+                break;
+            case 4:
+                playerScript.RepairPowerup();
                 break;
         }
 

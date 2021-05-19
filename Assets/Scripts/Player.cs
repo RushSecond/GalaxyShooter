@@ -30,8 +30,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _screenWrapY = 5.2f;
 
+    private int _lives = 0;
     [SerializeField]
-    private int _lives = 3;
+    private int _maxLives = 3;
     private int _shieldHP = 0;
     [SerializeField]
     private int _shieldMaxHP = 3;
@@ -84,6 +85,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Player audio is null");
 
         GainAmmo();
+        GainLives(_maxLives);
     }
 
     void Update()
@@ -186,20 +188,40 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _lives--;
-        _UIManager.UpdateLives(_lives);
+        GainLives(-1);
+    }
 
-        switch(_lives) // Effects on taking damage
+    void GainLives(int livesGained)
+    {
+        int newLifeAmount = Mathf.Clamp(_lives + livesGained, 0, _maxLives);
+        _UIManager.UpdateLives(newLifeAmount);
+        if (newLifeAmount == 0)
         {
-            case 2:
-                _damageEffectObjects[0].SetActive(true);
-                break;
-            case 1:
-                _damageEffectObjects[1].SetActive(true);
-                break;
-            case 0:
-                PlayerDeath();
-                break;
+            PlayerDeath();
+            return;
+        }
+
+        if (livesGained > 0) // gained life, so turn off some damage effects
+        {
+            ToggleDamageEffects(_lives - 1, newLifeAmount - 1, false);
+        }
+
+        if (livesGained < 0) // lost life, so turn on some damage effects
+        {
+            ToggleDamageEffects(newLifeAmount - 1, _lives - 1, true);
+        }
+
+        _lives = newLifeAmount; // do this last, so we can use _lives
+        // to properly set the damage effects
+    }
+
+    void ToggleDamageEffects(int startIndex, int endIndex, bool turnOn)
+    {
+        for (int index = startIndex; index < endIndex; index++)
+        { 
+            // prevent out of bounds error
+            if (index >= 0 && index < _damageEffectObjects.Length)
+                _damageEffectObjects[index].SetActive(turnOn);
         }
     }
 
@@ -220,6 +242,7 @@ public class Player : MonoBehaviour
 
     void PlayerDeath()
     {
+        _lives = 0;
         _spawnManager.OnPlayerDeath();
 
         // Stop movement
@@ -275,5 +298,10 @@ public class Player : MonoBehaviour
     {
         _ammoCurrent = _ammoMaximum;
         _UIManager.UpdateAmmoCount(_ammoCurrent);
+    }
+
+    public void RepairPowerup()
+    {
+        GainLives(1);
     }
 }
