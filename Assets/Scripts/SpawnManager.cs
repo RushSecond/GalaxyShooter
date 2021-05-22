@@ -96,4 +96,3 @@ public class SpawnManager : MonoBehaviour
         return new Vector3(xPosition, yPosition, 0);
     }
 }
-

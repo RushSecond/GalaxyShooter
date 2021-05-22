@@ -79,6 +79,7 @@ public class Player : MonoBehaviour
 
     private SpawnManager _spawnManager;
     private UIManager _UIManager;
+    private CameraManager _cameraManager;
 
     [Header("Sound")]
     [SerializeField]
@@ -98,6 +99,10 @@ public class Player : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         if (!_audioSource)
             Debug.LogError("Player audio is null");
+
+        _cameraManager = Camera.main.GetComponent<CameraManager>();
+        if (!_cameraManager)
+            Debug.LogError("Camera Manager is null");
 
         GainAmmo();
         GainMissiles();
@@ -242,6 +247,7 @@ public class Player : MonoBehaviour
         }
 
         GainLives(-1);
+        _cameraManager.CameraShake();
     }
 
     void GainLives(int livesGained)
