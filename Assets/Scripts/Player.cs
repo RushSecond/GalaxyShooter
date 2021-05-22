@@ -259,28 +259,14 @@ public class Player : MonoBehaviour
         ToggleDamageEffects();
     }
 
-    /// <summary>
-    /// Toggles the player's damage effect objects from startIndex(inclusive) to endIndex(exclusive)
-    /// </summary>
-    /// <param name="startIndex"></param>
-    /// <param name="endIndex"></param>
-    /// <param name="turnOn"></param>
-    void ToggleDamageEffects(int startIndex, int endIndex, bool turnOn)
-    {
-        for (int index = startIndex; index < endIndex; index++)
-        {          
-            if (index >= 0 && index < _damageEffectObjects.Length // prevent out of bounds error
-                && _damageEffectObjects[index] != null) // if damage effect is missing, just skip it
-            {
-                _damageEffectObjects[index].SetActive(turnOn);
-            }
-        }
-    }
-
     void ToggleDamageEffects()
     {
+        // loop through all damage effects
         for (int index = 0; index < _damageEffectObjects.Length; index++)
         {
+            //ignore null effects
+            if (_damageEffectObjects[index] == null) continue;
+
             // Effects with an index less than or equal to "lives -1" should be turned on
             // All others turned off
             bool turnOn = _lives - 1 <= index;
