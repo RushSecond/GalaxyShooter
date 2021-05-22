@@ -247,29 +247,16 @@ public class Player : MonoBehaviour
     void GainLives(int livesGained)
     {
         // new lives should be clamped between 0 and max
-        int newLifeAmount = Mathf.Clamp(_lives + livesGained, 0, _maxLives);
-        _UIManager.UpdateLives(newLifeAmount);
+        _lives = Mathf.Clamp(_lives + livesGained, 0, _maxLives);
+        _UIManager.UpdateLives(_lives);
 
-        if (newLifeAmount == 0)
+        if (_lives == 0)
         {
             PlayerDeath();
             return;
         }
 
-        if (livesGained > 0) // gained life, so turn off some damage effects
-        {
-            // if lives go from 1 to 3, we want to turn off
-            // effects 0 - 2 , so we subtract each by one
-            ToggleDamageEffects(_lives - 1, newLifeAmount - 1, false);
-        }
-
-        if (livesGained < 0) // lost life, so turn on some damage effects
-        {
-            ToggleDamageEffects(newLifeAmount - 1, _lives - 1, true);
-        }
-
-        _lives = newLifeAmount; // do this last, so we can use _lives
-        // to properly set the damage effects
+        ToggleDamageEffects();
     }
 
     /// <summary>
@@ -287,6 +274,17 @@ public class Player : MonoBehaviour
             {
                 _damageEffectObjects[index].SetActive(turnOn);
             }
+        }
+    }
+
+    void ToggleDamageEffects()
+    {
+        for (int index = 0; index < _damageEffectObjects.Length; index++)
+        {
+            // Effects with an index less than or equal to "lives -1" should be turned on
+            // All others turned off
+            bool turnOn = _lives - 1 <= index;
+            _damageEffectObjects[index].SetActive(turnOn);
         }
     }
 
