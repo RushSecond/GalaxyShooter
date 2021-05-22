@@ -20,6 +20,15 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
+
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.P))
+            ChooseAndCreatePowerup();
+#endif
+    }
+
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine());
@@ -45,9 +54,30 @@ public class SpawnManager : MonoBehaviour
         while (!_stopSpawning)
         {
             yield return new WaitForSeconds(Random.Range(3, 8));
-            
-            int randomIndex = Random.Range(0, _powerups.Length);
-            Instantiate(_powerups[randomIndex], RandomPositionAtRight(), Quaternion.identity);
+            ChooseAndCreatePowerup();
+        }
+    }
+
+    void ChooseAndCreatePowerup()
+    {
+        int totalWeight = 0;
+        int[] weights = new int[_powerups.Length];
+        for (int i = 0; i < _powerups.Length; i++)
+        {
+            weights[i] = _powerups[i].GetComponent<Powerup>().GetSpawnWeight;
+            totalWeight += weights[i];
+        }
+
+        int random = Random.Range(0, totalWeight);
+        for (int i = 0; i < _powerups.Length; i++)
+        {
+            if(random < weights[i])
+            {
+                Instantiate(_powerups[i], RandomPositionAtRight(), Quaternion.identity);
+                return;
+            }
+
+            random -= weights[i];
         }
     }
 

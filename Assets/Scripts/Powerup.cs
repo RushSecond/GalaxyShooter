@@ -11,9 +11,13 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private PowerupType _powerupID;
     [SerializeField]
+    private int _spawnChanceWeight = 5;
+    [SerializeField]
     private AudioClip _powerupAudio;
     [SerializeField]
     private float _audioVolume = 0.6f;
+
+    public int GetSpawnWeight { get => _spawnChanceWeight; }
 
     private void Start()
     {

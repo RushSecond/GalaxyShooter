@@ -115,6 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mySpeed: 3
   _powerupID: 0
+  _spawnChanceWeight: 5
   _powerupAudio: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
   _audioVolume: 0.6
 --- !u!95 &3453667694036663746
