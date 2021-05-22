@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
     private AudioClip _explosionAudio;
     private AudioSource _audioSource;
 
+    public bool _isDead { get; private set; } = false;
+
     private UIManager _UIManager;
     private Animator _myAnimator;
 
@@ -71,10 +73,12 @@ public class Enemy : MonoBehaviour
 
     private void EnemyDeath()
     {
+        _isDead = true;
+
         // Turn off firing
         StopCoroutine(fireRoutine);
 
-        // Enemy should no longer move or collide
+        // Enemy should no longer move or collide   
         _mySpeed = 0f;
         GetComponent<Collider2D>().enabled = false;
 

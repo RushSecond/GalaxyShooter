@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Speed and Bounds")]
     [SerializeField]
     private float _baseSpeed = 3f;
     [SerializeField]
@@ -14,15 +15,6 @@ public class Player : MonoBehaviour
     private float _thrusterSizeMultiplier = 1.8f;
     [SerializeField]
     private float _speedPowerupMutliplier = 1.6f;
-
-
-    private float _heatAmount = 0f;
-    private bool _overheating = false;
-    [SerializeField]
-    private float _heatGainedPerSecond = 0.25f;
-    [SerializeField]
-    private float _heatLostPerSecond = 0.125f;
-
     private bool _speedPowerupActive = false;
     [SerializeField]
     private float _speedDuration = 5f;
@@ -30,9 +22,18 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _screenWrapY = 5.2f;
 
-    private int _lives = 0;
+    [Header("Thrusters")]
+    [SerializeField]
+    private float _heatGainedPerSecond = 0.25f;
+    [SerializeField]
+    private float _heatLostPerSecond = 0.125f;
+    private float _heatAmount = 0f;
+    private bool _overheating = false; 
+
+    [Header("Lives, Shields, Damage")]   
     [SerializeField]
     private int _maxLives = 3;
+    private int _lives = 0;
     private int _shieldHP = 0;
     [SerializeField]
     private int _shieldMaxHP = 3;
@@ -40,12 +41,12 @@ public class Player : MonoBehaviour
     private GameObject _shieldObject;
     [SerializeField]
     private Color _shieldColorOriginal;
-
     [SerializeField]
     private GameObject[] _damageEffectObjects;
     [SerializeField]
     private GameObject _explosion;
 
+    [Header("Lasers")]
     [SerializeField]
     private float _fireRate = 0.5f;
     private float _laserCooldownTime = -1f;
@@ -56,19 +57,33 @@ public class Player : MonoBehaviour
     private int _ammoMaximum = 15;
     private int _ammoCurrent;
 
-    private bool _useTripleShot = false;
+    [Header("TripleShot")] 
     [SerializeField]
     private GameObject _myTripleLaser;
+    private bool _useTripleShot = false;
     [SerializeField]
     private float _tripleShotTime = 5f;
     private Coroutine _tripleShotRoutine;
 
+    [Header("Missiles")]
+    [SerializeField]
+    private GameObject _myMissile;
+    [SerializeField]
+    private Vector3 _missileOffset;
+    [SerializeField]
+    private float _missileCooldownTime = 1f;
+    [SerializeField]
+    private int _maxMissiles = 5;
+    private int _missileCount;
+    private bool _canShootMissile = true;
+
     private SpawnManager _spawnManager;
     private UIManager _UIManager;
 
-    private AudioSource _audioSource;
+    [Header("Sound")]
     [SerializeField]
     private AudioClip _laserAudio;
+    private AudioSource _audioSource;
 
     private void Start()
     {
@@ -85,6 +100,7 @@ public class Player : MonoBehaviour
             Debug.LogError("Player audio is null");
 
         GainAmmo();
+        GainMissiles();
         GainLives(_maxLives);
     }
 
@@ -98,6 +114,13 @@ public class Player : MonoBehaviour
         if (Input.GetButton("Fire1") && _laserCooldownTime <= 0f && _ammoCurrent > 0)
         {
             FireLaser();
+        }
+
+        // If fire2 button is pressed, no missile cooldown is remaining, and there's ammo,
+        // then fire a missile
+        if (Input.GetButton("Fire2") && _canShootMissile && _missileCount > 0)
+        {
+            FireMissile();
         }
 
         CalculateMovement();
@@ -124,6 +147,36 @@ public class Player : MonoBehaviour
 
         _audioSource.clip = _laserAudio;
         _audioSource.Play();
+    }
+
+    void FireMissile() // shoot two missiles
+    {
+        // Mirror on Y
+        Vector3 _mirrorOffset = Vector3.Scale(_missileOffset, new Vector3(1, -1, 1));
+
+        Vector3 missilePosition1 = transform.position + _missileOffset;     
+        Vector3 missilePosition2 = transform.position + _mirrorOffset;
+
+        GameObject.Instantiate(_myMissile, missilePosition1, transform.rotation);
+        GameObject.Instantiate(_myMissile, missilePosition2, transform.rotation);
+
+        _missileCount--; // update number of missiles and tell the UI
+        _UIManager.UpdateMissileCount(_missileCount);
+
+        _canShootMissile = false; // cooldown
+        StartCoroutine(MissileCooldown());
+    }
+
+    IEnumerator MissileCooldown()
+    {
+        yield return new WaitForSeconds(_missileCooldownTime);
+        _canShootMissile = true;
+    }
+
+    public void GainMissiles()
+    {
+        _missileCount = _maxMissiles;
+        _UIManager.UpdateMissileCount(_missileCount);
     }
 
     void CalculateMovement()

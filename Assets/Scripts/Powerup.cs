@@ -7,7 +7,7 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 3f;
 
-    private enum PowerupType {TripleShot, Speed, Shield, Ammo, Repair}
+    private enum PowerupType {TripleShot, Speed, Shield, Ammo, Repair, Missile}
     [SerializeField]
     private PowerupType _powerupID;
     [SerializeField]
@@ -64,6 +64,9 @@ public class Powerup : MonoBehaviour
                 break;
             case 4:
                 playerScript.RepairPowerup();
+                break;
+            case 5:
+                playerScript.GainMissiles();
                 break;
         }
 

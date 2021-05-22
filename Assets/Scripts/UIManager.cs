@@ -5,17 +5,22 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    
+    [Header("Lives")]
     [SerializeField]
     private Text _scoreText;
     [SerializeField]
     private Image _LivesImg;
     [SerializeField]
     private Sprite[] _livesSprites;
+
+    [Header("Ammo")]
     [SerializeField]
     private Text _ammoText;
     private bool _ammoEmpty;
+    [SerializeField]
+    private GameObject[] _missileImages;
 
+    [Header("Game Over")]
     [SerializeField]
     private Text _gameOverText;
     [SerializeField]
@@ -23,6 +28,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private float _textFlashDelay;
 
+    [Header("Thruster Heat")]
     [SerializeField]
     private Slider _heatGauge;
     [SerializeField]
@@ -31,7 +37,6 @@ public class UIManager : MonoBehaviour
     private Color _overheatOriginalColor;
     [SerializeField]
     private Color _overHeatFlashColor;
-
     [SerializeField]
     private Text _heatText;
     [SerializeField]
@@ -153,6 +158,16 @@ public class UIManager : MonoBehaviour
             yield return flashDelay;
             _ammoText.color = Color.white;
             yield return flashDelay;
+        }
+    }
+
+    public void UpdateMissileCount(int missileCount)
+    {
+        for (int i = 0; i < _missileImages.Length; i++)
+        {
+            // if missileCount is 5, sets images 0-4 active
+            // etc
+            _missileImages[i].SetActive(i < missileCount);
         }
     }
 }
