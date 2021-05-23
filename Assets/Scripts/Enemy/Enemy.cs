@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    enum MovementType {BasicMovement, Elliptical}
+
+    [SerializeField]
+    private MovementType _movementType;
+    private EnemyMovement _myMovement;
+
     [SerializeField]
     private float _mySpeed = 4f;
     [SerializeField]
@@ -25,6 +31,8 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        ChooseMovementType();
+
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (!_UIManager)
             Debug.LogError(this + " an enemy couldn't find the UIManager script.");
@@ -40,16 +48,22 @@ public class Enemy : MonoBehaviour
         fireRoutine = StartCoroutine(FireLaserRoutine());
     }
 
+    void ChooseMovementType()
+    {
+        switch((int)_movementType)
+        {
+            case 0:
+                _myMovement = new EnemyMovement(this);
+                break;
+            case 1:
+                _myMovement = new EllipticalMovement(this);
+                break;
+        }
+    }
+
     void Update()
     {
-        transform.Translate(Vector3.down * _mySpeed * Time.deltaTime);
-
-        // if bottom of screen
-        // respawn at top with a new random xPosition
-        if (transform.position.x <= -SpawnManager._screenBoundsX)
-        {
-            transform.position = SpawnManager.RandomPositionAtRight();
-        }
+        _myMovement.Move(_mySpeed);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
