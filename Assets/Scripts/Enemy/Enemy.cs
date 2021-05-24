@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    enum MovementType {BasicMovement, Elliptical}
+    public enum MovementType {BasicMovement, Elliptical}
 
     [SerializeField]
     private MovementType _movementType;
     private EnemyMovement _myMovement;
+
+    public void SetNewMovementType(int moveType)
+    {
+        _movementType = (MovementType)moveType;
+        SetupMovementType();
+    }
 
     [SerializeField]
     private float _mySpeed = 4f;
@@ -31,7 +37,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        ChooseMovementType();
+        SetupMovementType();
 
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (!_UIManager)
@@ -48,7 +54,7 @@ public class Enemy : MonoBehaviour
         fireRoutine = StartCoroutine(FireLaserRoutine());
     }
 
-    void ChooseMovementType()
+    void SetupMovementType()
     {
         switch((int)_movementType)
         {

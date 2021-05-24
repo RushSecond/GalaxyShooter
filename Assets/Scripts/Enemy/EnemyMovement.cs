@@ -7,7 +7,10 @@ public class EnemyMovement
     protected Transform _myTransform;
 
     public EnemyMovement(Enemy enemyScript)
-    { _myTransform = enemyScript.transform; }
+    {
+        _myTransform = enemyScript.transform;
+        _myTransform.position = SpawnManager.RandomPositionAtRight();
+    }
 
     public virtual void Move(float speed)
     {

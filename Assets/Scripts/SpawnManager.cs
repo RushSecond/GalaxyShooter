@@ -42,8 +42,10 @@ public class SpawnManager : MonoBehaviour
 
         while (!_stopSpawning)
         {
-            GameObject newEnemy = Instantiate(_spawnEnemy, RandomPositionAtRight(), Quaternion.Euler(0, 0, -90));
+            GameObject newEnemy = Instantiate(_spawnEnemy, Vector3.zero, Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
+            newEnemy.GetComponent<Enemy>().SetNewMovementType(Random.Range(0, 2));
+
             yield return waitSeconds;
         }
     }
