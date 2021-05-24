@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     public bool _isDead { get; private set; } = false;
 
     private UIManager _UIManager;
+    private SpawnManager _spawnManager;
     private Animator _myAnimator;
 
     void Start()
@@ -42,7 +43,11 @@ public class Enemy : MonoBehaviour
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (!_UIManager)
             Debug.LogError(this + " an enemy couldn't find the UIManager script.");
-        
+
+        _spawnManager = FindObjectOfType<SpawnManager>();
+        if (!_spawnManager)
+            Debug.LogError("Spawn Manager is null");
+
         _myAnimator = GetComponent<Animator>();
         if (!_myAnimator)
             Debug.LogError(this + " an enemy doesn't have an animator.");
@@ -94,20 +99,20 @@ public class Enemy : MonoBehaviour
     private void EnemyDeath()
     {
         _isDead = true;
+        _spawnManager.OnEnemyDeath(gameObject); // Tell the spawn manager
 
-        // Turn off firing
         StopCoroutine(fireRoutine);
 
         // Enemy should no longer move or collide   
         _mySpeed = 0f;
         GetComponent<Collider2D>().enabled = false;
-
+        // Explosion should appear behind other alive enemies
+        GetComponent<SpriteRenderer>().sortingOrder = -1; 
         // Play animation and sound
         _audioSource.clip = _explosionAudio;
         _audioSource.Play();
         _myAnimator.SetTrigger("OnEnemyDeath");
 
-        // Destroy after 5 seconds so the animation can play
         Destroy(gameObject, 2.8f);
     }
 

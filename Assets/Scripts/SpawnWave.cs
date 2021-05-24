@@ -17,4 +17,9 @@ public class SpawnWave : ScriptableObject
     private EnemyInstance[] _waveObjects;
 
     public EnemyInstance[] WaveObjects { get => _waveObjects; }
+
+    public SpawnWave()
+    {
+
+    }
 }

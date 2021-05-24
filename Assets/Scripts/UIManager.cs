@@ -20,6 +20,18 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject[] _missileImages;
 
+    [Header("Waves")]
+    [SerializeField]
+    private Text _waveText;
+    [SerializeField]
+    private Color _waveTextBaseColor;
+    [SerializeField]
+    private Color _waveTextSecondColor;
+    [SerializeField]
+    private float _waveColorBlendTime;
+    [SerializeField]
+    private float _waveTextDuration;
+
     [Header("Game Over")]
     [SerializeField]
     private Text _gameOverText;
@@ -51,10 +63,11 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _totalScore = 0;
-        UpdateText();
+        AddScore(0);
 
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
+        _waveText.gameObject.SetActive(false);
 
         _gameManager = FindObjectOfType<GameManager>();
         if (!_gameManager)
@@ -66,12 +79,53 @@ public class UIManager : MonoBehaviour
     public void AddScore(int morePoints)
     {
         _totalScore += morePoints;
-        UpdateText();
+        _scoreText.text = $"Score: {_totalScore}";
     }
 
-    private void UpdateText()
+    public void OnStartNewWave(int waveNumber)
     {
-        _scoreText.text = $"Score: {_totalScore}";
+        _waveText.text = $"Wave {waveNumber}";
+        StartCoroutine(NewWaveRoutine());
+    }
+
+    public IEnumerator NewWaveRoutine()
+    {
+        Color zeroAlpha = new Color(_waveTextBaseColor.r, _waveTextBaseColor.g, _waveTextBaseColor.b, 0);
+        WaitForEndOfFrame frameWait = new WaitForEndOfFrame();
+        float timeElapsed = 0;
+        _waveText.gameObject.SetActive(true);
+        // fade in
+        while (timeElapsed < _waveColorBlendTime)
+        {
+            _waveText.color = Color.Lerp(zeroAlpha, _waveTextBaseColor, timeElapsed / _waveColorBlendTime);
+            yield return frameWait;
+            timeElapsed += Time.deltaTime;
+        }
+
+        timeElapsed = 0;
+        // shift between base and second color repeatedly
+        while (timeElapsed < _waveTextDuration)
+        {
+            // alternate between 0 and 1 by using sin squared
+            float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI /2) / _waveColorBlendTime), 2);
+            _waveText.color = Color.Lerp(_waveTextBaseColor, _waveTextSecondColor, lerpProgress);
+            yield return frameWait;
+            timeElapsed += Time.deltaTime;
+        }
+
+        Color fadeOutStart = _waveText.color;
+        zeroAlpha = new Color(fadeOutStart.r, fadeOutStart.g, fadeOutStart.b, 0);
+        timeElapsed = 0;
+        //fade out
+        while (timeElapsed < _waveColorBlendTime)
+        {
+            // alternate between 0 and 1 by using sin squared
+            _waveText.color = Color.Lerp(fadeOutStart, zeroAlpha, timeElapsed / _waveColorBlendTime);
+            yield return frameWait;
+            timeElapsed += Time.deltaTime;
+        }
+
+        _waveText.gameObject.SetActive(false);
     }
 
     public void UpdateLives(int currentLives)

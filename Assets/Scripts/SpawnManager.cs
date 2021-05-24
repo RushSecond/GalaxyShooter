@@ -5,7 +5,17 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    private float _spawnTime = 5f;
+    private float _durationOfEntireWave;
+    private List<GameObject> _aliveEnemies;
+    private bool _allWaveEnemiesAreCreated;
+    [SerializeField]
+    private float _timeBetweenWaves;
+    [SerializeField]
+    private int _firstWaveNumberEnemies;
+    [SerializeField]
+    private int _moreEnemiesPerWave;
+    private int _waveNumber;
+
     [SerializeField]
     private GameObject _spawnEnemy;
     [SerializeField]
@@ -15,33 +25,53 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
+    private UIManager _UIManager;
+
+    private void Start()
+    {
+        _UIManager = FindObjectOfType<UIManager>();
+        if (!_UIManager)
+            Debug.LogError("UI Manager is null");
+
+        _aliveEnemies = new List<GameObject>();
+    }
 
     private void Update()
     {
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P)) // testing powerups
             ChooseAndCreatePowerup();
 #endif
     }
 
     public void StartSpawning()
     {
-        StartCoroutine(SpawnEnemyRoutine());
+        _waveNumber = 1;
+        StartCoroutine(WaveSpawnRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }
 
-    IEnumerator SpawnEnemyRoutine()
-    { 
-        WaitForSeconds waitSeconds = new WaitForSeconds(_spawnTime);
-        yield return new WaitForSeconds(2f);
+    IEnumerator WaveSpawnRoutine()
+    {
+        yield return new WaitForSeconds(_timeBetweenWaves);
+        _UIManager.OnStartNewWave(_waveNumber); // tell the UI so it can display wave number on screen
+        _allWaveEnemiesAreCreated = false;
+        _aliveEnemies.Clear();
+        // get number of enemies
+        int numberOfEnemies = _firstWaveNumberEnemies + _moreEnemiesPerWave * (_waveNumber - 1);
+        int enemiesCreatedSoFar = 0;
+        WaitForSeconds timeBetweenEnemies = new WaitForSeconds(_durationOfEntireWave / (float)numberOfEnemies);
 
-        while (!_stopSpawning)
+        while (!_stopSpawning && !_allWaveEnemiesAreCreated)
         {
+            yield return timeBetweenEnemies;
+            // spawn an enemy
             GameObject newEnemy = Instantiate(_spawnEnemy, Vector3.zero, Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
             newEnemy.GetComponent<Enemy>().SetNewMovementType(Random.Range(0, 2));
-
-            yield return waitSeconds;
+            // add enemy to list          
+            _aliveEnemies.Add(newEnemy);
+            if (++enemiesCreatedSoFar >= numberOfEnemies) _allWaveEnemiesAreCreated = true;
         }
     }
 
@@ -81,6 +111,16 @@ public class SpawnManager : MonoBehaviour
     public void OnPlayerDeath()
     {
         _stopSpawning = true;
+    }
+
+    public void OnEnemyDeath(GameObject enemyThatDied)
+    {
+        _aliveEnemies.Remove(enemyThatDied);
+        if (_aliveEnemies.Count == 0 && _allWaveEnemiesAreCreated)
+        {
+            _waveNumber++;
+            StartCoroutine(WaveSpawnRoutine()); // start the next wave
+        }
     }
 
     /// <summary>
