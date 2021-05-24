@@ -14,7 +14,7 @@ public class Laser : MonoBehaviour
 
         // if the laser y position is greater than 5.5f, destroy it
         // and destroy parent too if it has one
-        if (Mathf.Abs(transform.position.x) > SpawnManager._screenBoundsX)
+        if (Mathf.Abs(transform.position.x) > CameraManager.GetCameraBounds().extents.x + 1f)
         {
             Transform myParent = transform.parent;
             if (transform.parent)

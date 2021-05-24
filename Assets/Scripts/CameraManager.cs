@@ -63,4 +63,15 @@ public class CameraManager : MonoBehaviour
         float randomAngle = Random.Range(120f, 240f);
         return Quaternion.Euler(0, 0, randomAngle) * lastDirection;
     }
+
+    public static Bounds GetCameraBounds()
+    {
+        Camera myself = Camera.main;
+        float height = 2 * myself.orthographicSize;
+        float width = height * myself.aspect;
+        Vector3 center = Vector3.ProjectOnPlane(myself.transform.position, Vector3.forward);
+
+        Bounds cameraBounds = new Bounds(myself.transform.position, new Vector3(width, height, 0));
+        return cameraBounds;
+    }
 }

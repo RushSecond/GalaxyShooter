@@ -15,7 +15,7 @@ public class EllipticalMovement : EnemyMovement
         ellipseVertex = new Vector3(7, 0, 0);
         ellipseCenter = ellipseVertex - new Vector3(minorAxis/2, 0, 0);
 
-        _myTransform.position = new Vector3(7, -SpawnManager._screenBoundsY - 3f, 0);
+        _myTransform.position = new Vector3(7, -CameraManager.GetCameraBounds().extents.y - 1f, 0);
     }
 
     public override void Move(float speed)

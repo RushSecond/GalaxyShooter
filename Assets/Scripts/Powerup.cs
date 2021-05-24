@@ -29,7 +29,7 @@ public class Powerup : MonoBehaviour
     {
         transform.Translate(Vector3.left * _mySpeed * Time.deltaTime);
 
-        if (transform.position.x <= -SpawnManager._screenBoundsX)
+        if (transform.position.x <= -CameraManager.GetCameraBounds().extents.x - 1f)
         {
             Destroy(gameObject);
         }

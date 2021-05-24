@@ -5,11 +5,6 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    public static float _screenBoundsX = 9.7f;
-    [SerializeField]
-    public static float _screenBoundsY = 4.5f;
-
-    [SerializeField]
     private float _spawnTime = 5f;
     [SerializeField]
     private GameObject _spawnEnemy;
@@ -93,8 +88,12 @@ public class SpawnManager : MonoBehaviour
     /// </summary>
     public static Vector3 RandomPositionAtRight()
     {
-        float xPosition = _screenBoundsX;
-        float yPosition = Random.Range(-_screenBoundsY, _screenBoundsY);
+        Bounds cameraBounds = CameraManager.GetCameraBounds();
+        float xPosition = cameraBounds.center.x + cameraBounds.extents.x + 1f;
+
+        float yMax = cameraBounds.center.y + cameraBounds.extents.y - 0.5f;
+        float yPosition = Random.Range(-yMax, yMax);
+
         return new Vector3(xPosition, yPosition, 0);
     }
 }

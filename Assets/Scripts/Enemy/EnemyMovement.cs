@@ -16,7 +16,7 @@ public class EnemyMovement
     {
         _myTransform.Translate(Vector3.down * speed * Time.deltaTime);
 
-        if (_myTransform.position.x <= -SpawnManager._screenBoundsX)
+        if (_myTransform.position.x <= -CameraManager.GetCameraBounds().extents.x - 1f)
         {
             _myTransform.position = SpawnManager.RandomPositionAtRight();
         }

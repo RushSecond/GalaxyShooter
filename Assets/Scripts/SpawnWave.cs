@@ -5,8 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public struct EnemyInstance
 {
-    public GameObject enemy;
-    public float timeDelay;
+    public GameObject enemyType;
+    public float numberOfEnemies;
+    public float timeBetweenEnemies;
 }
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/SpawnWave", order = 1)]
