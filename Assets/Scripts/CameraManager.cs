@@ -27,7 +27,7 @@ public class CameraManager : MonoBehaviour
     {
         float timeRemaining = _totalShakingTime;
         Vector3 shakeDirection = GetShakeDirection();
-        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+        WaitForSeconds wait = new WaitForSeconds(0f);
 
         while (timeRemaining > 0)
         {

@@ -16,9 +16,15 @@ public class UIManager : MonoBehaviour
     [Header("Ammo")]
     [SerializeField]
     private Text _ammoText;
+    [SerializeField]
+    private string _ammoString = "Ammo:";
     private bool _ammoEmpty;
     [SerializeField]
     private GameObject[] _missileImages;
+    [SerializeField]
+    private Slider _upgradeGauge;
+    [SerializeField]
+    private string _upgradeString = "Upgrading...";
 
     [Header("Waves")]
     [SerializeField]
@@ -91,7 +97,7 @@ public class UIManager : MonoBehaviour
     public IEnumerator NewWaveRoutine()
     {
         Color zeroAlpha = new Color(_waveTextBaseColor.r, _waveTextBaseColor.g, _waveTextBaseColor.b, 0);
-        WaitForEndOfFrame frameWait = new WaitForEndOfFrame();
+        WaitForSeconds frameWait = new WaitForSeconds(0f);
         float timeElapsed = 0;
         _waveText.gameObject.SetActive(true);
         // fade in
@@ -189,9 +195,10 @@ public class UIManager : MonoBehaviour
         }       
     }
 
-    public void UpdateAmmoCount(int ammoCount)
+    public void UpdateAmmoCount(int ammoCount, int ammoMaximum)
     {
-        _ammoText.text = $"Ammo: {ammoCount}";
+        _upgradeGauge.gameObject.SetActive(false);
+        _ammoText.text = $"{_ammoString} {ammoCount} / {ammoMaximum}";
 
         if (ammoCount <= 0)
         {
@@ -201,6 +208,13 @@ public class UIManager : MonoBehaviour
         }
 
         _ammoEmpty = false;
+    }
+
+    public void UpdateWeaponUpgrade(float progress)
+    {
+        _upgradeGauge.gameObject.SetActive(true);
+        _ammoText.text = _upgradeString;
+        _upgradeGauge.value = progress;
     }
 
     IEnumerator AmmoEmptyRoutine() // causes ammo text to flash red
@@ -224,4 +238,6 @@ public class UIManager : MonoBehaviour
             _missileImages[i].SetActive(i < missileCount);
         }
     }
+
+    
 }

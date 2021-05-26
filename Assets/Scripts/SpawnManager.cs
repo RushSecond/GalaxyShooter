@@ -44,7 +44,7 @@ public class SpawnManager : MonoBehaviour
 #endif
     }
 
-    public void StartSpawning()
+    public void StartSpawning() // called by player when the asteroid is destroyed
     {
         _waveNumber = 1;
         StartCoroutine(WaveSpawnRoutine());

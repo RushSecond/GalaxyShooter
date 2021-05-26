@@ -48,14 +48,22 @@ public class Player : MonoBehaviour
 
     [Header("Lasers")]
     [SerializeField]
-    private float _fireRate = 0.5f;
+    private float _baseFireRate = 0.5f;
+    [SerializeField]
+    private float _bonusAttackSpeedPerUpgrade = .3f;
+    private float _currentAttackSpeed = 1;
     private float _laserCooldownTime = -1f;
+    private bool _isUpgradingWeapon = false;
     [SerializeField]
     private GameObject _myLaser;
     private float _laserOffsetX = 0.7f;
     [SerializeField]
     private int _ammoMaximum = 15;
+    [SerializeField]
+    private int _bonusMaxAmmoPerUpgrade = 10;
     private int _ammoCurrent;
+    [SerializeField]
+    private float _upgradeTime = 5f;
 
     [Header("TripleShot")] 
     [SerializeField]
@@ -116,7 +124,8 @@ public class Player : MonoBehaviour
 
         // If fire button is pressed, no cooldown is remaining, and there's ammo,
         // then fire a laser
-        if (Input.GetButton("Fire1") && _laserCooldownTime <= 0f && _ammoCurrent > 0)
+        if (_laserCooldownTime <= 0f && _ammoCurrent > 0
+            && !_isUpgradingWeapon && Input.GetButton("Fire1"))
         {
             FireLaser();
         }
@@ -145,10 +154,10 @@ public class Player : MonoBehaviour
             GameObject.Instantiate(_myLaser, laserPosition, transform.rotation);
         }
 
-        _laserCooldownTime = _fireRate; // reset fire cooldown
+        _laserCooldownTime = _baseFireRate / _currentAttackSpeed; // reset fire cooldown
 
         _ammoCurrent--; // reduce ammo and tell the UI Manager
-        _UIManager.UpdateAmmoCount(_ammoCurrent);
+        _UIManager.UpdateAmmoCount(_ammoCurrent, _ammoMaximum);
 
         _audioSource.clip = _laserAudio;
         _audioSource.Play();
@@ -352,11 +361,33 @@ public class Player : MonoBehaviour
     public void GainAmmo()
     {
         _ammoCurrent = _ammoMaximum;
-        _UIManager.UpdateAmmoCount(_ammoCurrent);
+        _UIManager.UpdateAmmoCount(_ammoCurrent, _ammoMaximum);
     }
 
     public void RepairPowerup()
     {
         GainLives(1);
+    }
+
+    public void UpgradeWeapon()
+    {
+        StartCoroutine(UpgradeRoutine());
+    }
+
+    IEnumerator UpgradeRoutine()
+    {
+        _isUpgradingWeapon = true;
+        float elapsedTime = 0;
+        WaitForSeconds frameWait = new WaitForSeconds(0);
+        while (elapsedTime < _upgradeTime)
+        {
+            yield return frameWait;
+            elapsedTime += Time.deltaTime;
+            _UIManager.UpdateWeaponUpgrade(elapsedTime / _upgradeTime);
+        }
+        _isUpgradingWeapon = false;
+        _currentAttackSpeed += _bonusAttackSpeedPerUpgrade;
+        _ammoMaximum += _bonusMaxAmmoPerUpgrade;
+        GainAmmo();
     }
 }
