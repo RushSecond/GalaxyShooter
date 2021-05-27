@@ -371,21 +371,23 @@ public class Player : MonoBehaviour
 
     public void UpgradeWeapon()
     {
-        StartCoroutine(UpgradeRoutine());
+        if (!_isUpgradingWeapon)
+            StartCoroutine(UpgradeRoutine());
     }
 
     IEnumerator UpgradeRoutine()
     {
-        _isUpgradingWeapon = true;
+        _isUpgradingWeapon = true; // Player can't fire
         float elapsedTime = 0;
-        WaitForSeconds frameWait = new WaitForSeconds(0);
-        while (elapsedTime < _upgradeTime)
+        while (elapsedTime < _upgradeTime) // lasts some duration
         {
-            yield return frameWait;
+            yield return null;
             elapsedTime += Time.deltaTime;
+            // tell the UI manager to update its upgrade gauge
             _UIManager.UpdateWeaponUpgrade(elapsedTime / _upgradeTime);
         }
-        _isUpgradingWeapon = false;
+        _isUpgradingWeapon = false; // Player can fire aagain!
+        // and gets bonuses to the laser weapon!
         _currentAttackSpeed += _bonusAttackSpeedPerUpgrade;
         _ammoMaximum += _bonusMaxAmmoPerUpgrade;
         GainAmmo();

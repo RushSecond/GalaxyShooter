@@ -97,14 +97,13 @@ public class UIManager : MonoBehaviour
     public IEnumerator NewWaveRoutine()
     {
         Color zeroAlpha = new Color(_waveTextBaseColor.r, _waveTextBaseColor.g, _waveTextBaseColor.b, 0);
-        WaitForSeconds frameWait = new WaitForSeconds(0f);
         float timeElapsed = 0;
         _waveText.gameObject.SetActive(true);
         // fade in
         while (timeElapsed < _waveColorBlendTime)
         {
             _waveText.color = Color.Lerp(zeroAlpha, _waveTextBaseColor, timeElapsed / _waveColorBlendTime);
-            yield return frameWait;
+            yield return null;
             timeElapsed += Time.deltaTime;
         }
 
@@ -115,7 +114,7 @@ public class UIManager : MonoBehaviour
             // alternate between 0 and 1 by using sin squared
             float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI /2) / _waveColorBlendTime), 2);
             _waveText.color = Color.Lerp(_waveTextBaseColor, _waveTextSecondColor, lerpProgress);
-            yield return frameWait;
+            yield return null;
             timeElapsed += Time.deltaTime;
         }
 
@@ -127,7 +126,7 @@ public class UIManager : MonoBehaviour
         {
             // alternate between 0 and 1 by using sin squared
             _waveText.color = Color.Lerp(fadeOutStart, zeroAlpha, timeElapsed / _waveColorBlendTime);
-            yield return frameWait;
+            yield return null;
             timeElapsed += Time.deltaTime;
         }
 

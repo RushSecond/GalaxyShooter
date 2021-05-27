@@ -27,7 +27,6 @@ public class CameraManager : MonoBehaviour
     {
         float timeRemaining = _totalShakingTime;
         Vector3 shakeDirection = GetShakeDirection();
-        WaitForSeconds wait = new WaitForSeconds(0f);
 
         while (timeRemaining > 0)
         {
@@ -42,7 +41,7 @@ public class CameraManager : MonoBehaviour
                 Vector3 interpolatePosition = Vector3.Lerp(shakeTarget, basePosition, progress);
                 transform.position = interpolatePosition;
 
-                yield return wait;
+                yield return null;
                 timeRemaining -= Time.deltaTime;
                 currentTime += Time.deltaTime;
             }
