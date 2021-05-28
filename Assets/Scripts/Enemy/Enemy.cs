@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     private MovementType _movementType;
-    private EnemyMovement _myMovement;
+    protected EnemyMovement _myMovement;
 
     public void SetNewMovementType(int moveType)
     {
@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _mySpeed = 4f;
     [SerializeField]
-    private GameObject _enemyLaser;
+    protected GameObject _enemyLaser;
     private float _laserOffsetX = -1f;
     private Coroutine fireRoutine;
     [SerializeField]
@@ -29,6 +29,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private AudioClip _explosionAudio;
     private AudioSource _audioSource;
+    [SerializeField]
+    private GameObject _explosion;
 
     public bool _isDead { get; private set; } = false;
 
@@ -36,7 +38,7 @@ public class Enemy : MonoBehaviour
     private SpawnManager _spawnManager;
     private Animator _myAnimator;
 
-    void Start()
+    protected void Start()
     {
         SetupMovementType();
 
@@ -49,17 +51,12 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Spawn Manager is null");
 
         _myAnimator = GetComponent<Animator>();
-        if (!_myAnimator)
-            Debug.LogError(this + " an enemy doesn't have an animator.");
-
         _audioSource = GetComponent<AudioSource>();
-        if (!_audioSource)
-            Debug.LogError(this + " an enemy doesn't have an audio source.");
 
         fireRoutine = StartCoroutine(FireLaserRoutine());
     }
 
-    void SetupMovementType()
+    protected virtual void SetupMovementType()
     {
         switch((int)_movementType)
         {
@@ -72,7 +69,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Update()
+    protected void Update()
     {
         _myMovement.Move(_mySpeed);
     }
@@ -107,16 +104,12 @@ public class Enemy : MonoBehaviour
         _mySpeed = 0f;
         GetComponent<Collider2D>().enabled = false;
         // Explosion should appear behind other alive enemies
-        GetComponent<SpriteRenderer>().sortingOrder = -1; 
-        // Play animation and sound
-        _audioSource.clip = _explosionAudio;
-        _audioSource.Play();
-        _myAnimator.SetTrigger("OnEnemyDeath");
+        GetComponent<SpriteRenderer>().sortingOrder = -1;
 
-        Destroy(gameObject, 2.8f);
+        HandleDeathEffects();
     }
 
-    IEnumerator FireLaserRoutine()
+    protected virtual IEnumerator FireLaserRoutine()
     {
         Vector3 laserOffset = new Vector3(_laserOffsetX, 0, 0);
         while (true)
@@ -128,5 +121,23 @@ public class Enemy : MonoBehaviour
             _audioSource.clip = _laserAudio;
             _audioSource.Play();
         }
+    }
+
+    void HandleDeathEffects()
+    {
+        // Play animation and sound
+        if (_myAnimator)
+        {
+            _myAnimator.SetTrigger("OnEnemyDeath");
+            _audioSource.clip = _explosionAudio;
+            _audioSource.Play();
+            Destroy(gameObject, 2.8f);
+            return;
+        }
+
+        // Othewise instatiate an explostion
+        GameObject explosion = Instantiate(_explosion, this.transform.position, Quaternion.identity);
+        Destroy(explosion, 3f); // Destroy the new explosion after 3 seconds  
+        Destroy(this.gameObject, 0.3f); // Detroy us after 0.3 seconds
     }
 }

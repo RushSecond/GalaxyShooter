@@ -11,9 +11,12 @@ public class EllipticalMovement : EnemyMovement
     private float majorAxis=8, minorAxis=4;
 
     public EllipticalMovement(Enemy enemyScript) : base(enemyScript)
+    {}
+
+    protected override void SetStartPosition()
     {
         ellipseVertex = new Vector3(7, 0, 0);
-        ellipseCenter = ellipseVertex - new Vector3(minorAxis/2, 0, 0);
+        ellipseCenter = ellipseVertex - new Vector3(minorAxis / 2, 0, 0);
 
         _myTransform.position = new Vector3(7, -CameraManager.GetCameraBounds().extents.y - 1f, 0);
     }
@@ -35,7 +38,7 @@ public class EllipticalMovement : EnemyMovement
 
         angleAroundEllipse += speed * 2 * Time.deltaTime / majorAxis;
         SetPositionByAngle();
-    }
+    }   
 
     void SetPositionByAngle()
     {

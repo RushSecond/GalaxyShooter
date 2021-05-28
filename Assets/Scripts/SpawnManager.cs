@@ -17,7 +17,7 @@ public class SpawnManager : MonoBehaviour
     private int _waveNumber;
 
     [SerializeField]
-    private GameObject _spawnEnemy;
+    private GameObject[] _enemyTypes;
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
@@ -66,7 +66,8 @@ public class SpawnManager : MonoBehaviour
         {
             yield return timeBetweenEnemies;
             // spawn an enemy
-            GameObject newEnemy = Instantiate(_spawnEnemy, Vector3.zero, Quaternion.Euler(0, 0, -90));
+            int enemyIndex = Random.Range(0, _enemyTypes.Length);
+            GameObject newEnemy = Instantiate(_enemyTypes[enemyIndex], Vector3.zero, Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
             newEnemy.GetComponent<Enemy>().SetNewMovementType(Random.Range(0, 2));
             // add enemy to list          

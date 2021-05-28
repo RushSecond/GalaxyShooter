@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class EnemyMovement
 {
+    protected Enemy _myEnemy;
     protected Transform _myTransform;
 
     public EnemyMovement(Enemy enemyScript)
     {
+        _myEnemy = enemyScript;
         _myTransform = enemyScript.transform;
+        SetStartPosition();
+    }
+
+    protected virtual void SetStartPosition()
+    {
         _myTransform.position = SpawnManager.RandomPositionAtRight();
     }
 
