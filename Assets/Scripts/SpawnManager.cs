@@ -69,7 +69,6 @@ public class SpawnManager : MonoBehaviour
             int enemyIndex = Random.Range(0, _enemyTypes.Length);
             GameObject newEnemy = Instantiate(_enemyTypes[enemyIndex], Vector3.zero, Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
-            newEnemy.GetComponent<Enemy>().SetNewMovementType(Random.Range(0, 2));
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);
             if (++enemiesCreatedSoFar >= numberOfEnemies) _allWaveEnemiesAreCreated = true;

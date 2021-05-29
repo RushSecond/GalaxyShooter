@@ -4,28 +4,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public enum MovementType {BasicMovement, Elliptical}
+    private EnemyBehavior _myBehavior;
 
-    [SerializeField]
-    private MovementType _movementType;
-    protected EnemyMovement _myMovement;
-
-    public void SetNewMovementType(int moveType)
-    {
-        _movementType = (MovementType)moveType;
-        SetupMovementType();
-    }
-
-    [SerializeField]
-    private float _mySpeed = 4f;
-    [SerializeField]
-    protected GameObject _enemyLaser;
-    private float _laserOffsetX = -1f;
-    private Coroutine fireRoutine;
     [SerializeField]
     private int _scoreValue = 10;
-    [SerializeField]
-    private AudioClip _laserAudio;
     [SerializeField]
     private AudioClip _explosionAudio;
     private AudioSource _audioSource;
@@ -38,9 +20,11 @@ public class Enemy : MonoBehaviour
     private SpawnManager _spawnManager;
     private Animator _myAnimator;
 
-    protected void Start()
+    void Start()
     {
-        SetupMovementType();
+        _myBehavior = GetComponent<EnemyBehavior>();
+        if (!_myBehavior)
+            Debug.LogError(this + " an enemy doesn't have a behavior script.");
 
         _UIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (!_UIManager)
@@ -52,26 +36,11 @@ public class Enemy : MonoBehaviour
 
         _myAnimator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
-
-        fireRoutine = StartCoroutine(FireLaserRoutine());
     }
 
-    protected virtual void SetupMovementType()
+    void Update()
     {
-        switch((int)_movementType)
-        {
-            case 0:
-                _myMovement = new EnemyMovement(this);
-                break;
-            case 1:
-                _myMovement = new EllipticalMovement(this);
-                break;
-        }
-    }
-
-    protected void Update()
-    {
-        _myMovement.Move(_mySpeed);
+        if (!_isDead) _myBehavior.Act();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -98,29 +67,12 @@ public class Enemy : MonoBehaviour
         _isDead = true;
         _spawnManager.OnEnemyDeath(gameObject); // Tell the spawn manager
 
-        StopCoroutine(fireRoutine);
-
-        // Enemy should no longer move or collide   
-        _mySpeed = 0f;
+        // Enemy should no longer collide   
         GetComponent<Collider2D>().enabled = false;
         // Explosion should appear behind other alive enemies
-        GetComponent<SpriteRenderer>().sortingOrder = -1;
+        GetComponent<SpriteRenderer>().sortingOrder = -10;
 
         HandleDeathEffects();
-    }
-
-    protected virtual IEnumerator FireLaserRoutine()
-    {
-        Vector3 laserOffset = new Vector3(_laserOffsetX, 0, 0);
-        while (true)
-        {
-            int fireTime = Random.Range(3, 8);
-            yield return new WaitForSeconds(fireTime);
-
-            Instantiate(_enemyLaser, transform.position + laserOffset, transform.rotation);
-            _audioSource.clip = _laserAudio;
-            _audioSource.Play();
-        }
     }
 
     void HandleDeathEffects()
