@@ -70,13 +70,13 @@ public class Powerup : MonoBehaviour
                 playerScript.StartSpeed();
                 break;
             case 2:
-                playerScript.ToggleShields(true);
+                playerScript.playerLives.ToggleShields(true);
                 break;
             case 3:
                 playerScript.GainAmmo();
                 break;
             case 4:
-                playerScript.RepairPowerup();
+                playerScript.playerLives.RepairPowerup();
                 break;
             case 5:
                 playerScript.GainMissiles();

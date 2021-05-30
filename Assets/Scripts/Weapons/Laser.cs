@@ -2,10 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Laser : MonoBehaviour
+public class Laser : MonoBehaviour, I_Weapon
 {
     [SerializeField]
     private float _mySpeed = 8f;
+    [SerializeField]
+    int _damage = 1;
+
+    public int GetDamage()
+    {
+        return _damage;
+    }
 
     void Update()
     {
@@ -30,12 +37,12 @@ public class Laser : MonoBehaviour
         // Handle collision with player
         if (tag == "EnemyLaser" && other.gameObject.tag == "Player")
         {
-            Player playerScript = other.GetComponent<Player>();
+            PlayerLives playerScript = other.GetComponent<PlayerLives>();
             HurtPlayer(playerScript);
         }
     }
 
-    void HurtPlayer(Player playerScript)
+    void HurtPlayer(PlayerLives playerScript)
     {
         if (!playerScript) return;
         playerScript.OnTakeDamage();

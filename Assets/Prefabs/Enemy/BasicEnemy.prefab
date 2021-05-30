@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5056677032068857199}
   - component: {fileID: 6430713647307795557}
   - component: {fileID: 6554853652192693716}
+  - component: {fileID: -8170983279099809207}
   - component: {fileID: -4558207621906920396}
   - component: {fileID: -3845624298820611963}
   - component: {fileID: 7551343370927170186}
@@ -100,9 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a0a4f5504cad14bad07b3367bb32e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scoreValue: 10
-  _explosionAudio: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
-  _explosion: {fileID: 0}
 --- !u!114 &6554853652192693716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +117,26 @@ MonoBehaviour:
   _myProjectile: {fileID: 3116400379239090600, guid: ad618a4a48e88ba429be7f2bc31ff471, type: 3}
   _projectileOffset: {x: -1, y: 0, z: 0}
   _projectileAudio: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
+--- !u!114 &-8170983279099809207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8579086677366891526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4299688c7d38247933bb7e76e86479, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxLives: 1
+  _shieldMaxHP: 1
+  _shieldObject: {fileID: 0}
+  _shieldColorOriginal: {r: 0, g: 0, b: 0, a: 0}
+  _damageEffectObjects: []
+  _explosion: {fileID: 0}
+  _scoreValue: 10
+  _explosionAudio: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
 --- !u!61 &-4558207621906920396
 BoxCollider2D:
   m_ObjectHideFlags: 0

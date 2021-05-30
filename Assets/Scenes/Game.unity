@@ -777,6 +777,7 @@ GameObject:
   - component: {fileID: 722035135}
   - component: {fileID: 722035134}
   - component: {fileID: 722035136}
+  - component: {fileID: 722035140}
   - component: {fileID: 722035137}
   - component: {fileID: 722035138}
   - component: {fileID: 722035139}
@@ -877,14 +878,6 @@ MonoBehaviour:
   _screenWrapY: 5.1
   _heatGainedPerSecond: 0.25
   _heatLostPerSecond: 0.125
-  _maxLives: 3
-  _shieldMaxHP: 3
-  _shieldObject: {fileID: 884429075}
-  _shieldColorOriginal: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
-  _damageEffectObjects:
-  - {fileID: 1891198517}
-  - {fileID: 1603205702}
-  _explosion: {fileID: 1336379337533165143, guid: 954259ecc999334498b9e658994bf04a, type: 3}
   _baseFireRate: 0.5
   _bonusAttackSpeedPerUpgrade: 0.3
   _myLaser: {fileID: 5995165263144656246, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}
@@ -1041,6 +1034,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &722035140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722035133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f45bd89a9e7abe64d85cc4edd1f2805f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxLives: 3
+  _shieldMaxHP: 3
+  _shieldObject: {fileID: 884429075}
+  _shieldColorOriginal: {r: 1, g: 1, b: 1, a: 0.6745098}
+  _damageEffectObjects:
+  - {fileID: 1891198517}
+  - {fileID: 1603205702}
+  _explosion: {fileID: 1336379337533165143, guid: 954259ecc999334498b9e658994bf04a, type: 3}
 --- !u!1 &834290283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1075,7 +1088,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 79.59999}
+  m_AnchoredPosition: {x: 0, y: 79.599976}
   m_SizeDelta: {x: 481.3, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &834290285
@@ -1588,6 +1601,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2633015999529569653, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3617999254788842829, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5050055915534583326, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
       propertyPath: m_Name
       value: SmartEnemy

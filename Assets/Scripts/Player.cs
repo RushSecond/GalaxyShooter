@@ -30,22 +30,6 @@ public class Player : MonoBehaviour
     private float _heatAmount = 0f;
     private bool _overheating = false; 
 
-    [Header("Lives, Shields, Damage")]   
-    [SerializeField]
-    private int _maxLives = 3;
-    private int _lives = 0;
-    private int _shieldHP = 0;
-    [SerializeField]
-    private int _shieldMaxHP = 3;
-    [SerializeField]
-    private GameObject _shieldObject;
-    [SerializeField]
-    private Color _shieldColorOriginal;
-    [SerializeField]
-    private GameObject[] _damageEffectObjects;
-    [SerializeField]
-    private GameObject _explosion;
-
     [Header("Lasers")]
     [SerializeField]
     private float _baseFireRate = 0.5f;
@@ -85,9 +69,8 @@ public class Player : MonoBehaviour
     private int _missileCount;
     private bool _canShootMissile = true;
 
-    private SpawnManager _spawnManager;
     private UIManager _UIManager;
-    private CameraManager _cameraManager;
+    public PlayerLives playerLives { get; private set; }
 
     [Header("Sound")]
     [SerializeField]
@@ -96,9 +79,9 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _spawnManager = FindObjectOfType<SpawnManager>();
-        if (!_spawnManager)
-            Debug.LogError("Spawn Manager is null");
+        playerLives = GetComponent<PlayerLives>();
+        if (!playerLives)
+            Debug.LogError("Player doesn't have a lives script.");
 
         _UIManager = FindObjectOfType<UIManager>();
         if (!_UIManager)
@@ -108,17 +91,14 @@ public class Player : MonoBehaviour
         if (!_audioSource)
             Debug.LogError("Player audio is null");
 
-        _cameraManager = Camera.main.GetComponent<CameraManager>();
-        if (!_cameraManager)
-            Debug.LogError("Camera Manager is null");
-
         GainAmmo();
         GainMissiles();
-        GainLives(_maxLives);
     }
 
     void Update()
     {
+        if (playerLives.isDead) return;
+
         // Reduce the cooldown time
         _laserCooldownTime -= Time.deltaTime;
 
@@ -247,87 +227,6 @@ public class Player : MonoBehaviour
         return speed;
     }
 
-    public void OnTakeDamage()
-    {
-        if (_shieldHP > 0) // Shields take damage
-        {
-            ShieldDamage();
-            return;
-        }
-
-        GainLives(-1);
-        _cameraManager.CameraShake();
-    }
-
-    void GainLives(int livesGained)
-    {
-        // new lives should be clamped between 0 and max
-        _lives = Mathf.Clamp(_lives + livesGained, 0, _maxLives);
-        _UIManager.UpdateLives(_lives);
-
-        if (_lives == 0)
-        {
-            PlayerDeath();
-            return;
-        }
-
-        ToggleDamageEffects();
-    }
-
-    void ToggleDamageEffects()
-    {
-        // loop through all damage effects
-        for (int index = 0; index < _damageEffectObjects.Length; index++)
-        {
-            //ignore null effects
-            if (_damageEffectObjects[index] == null) continue;
-
-            // Effects with an index less than or equal to "lives -1" should be turned on
-            // All others turned off
-            bool turnOn = _lives - 1 <= index;
-            _damageEffectObjects[index].SetActive(turnOn);
-        }
-    }
-
-    void ShieldDamage()
-    {
-        _shieldHP--;
-        if (_shieldHP == 0)
-        {
-            ToggleShields(false);
-            return;
-        }
-
-        // Change the color of the shield object to be less bright 
-        float fractionOfShieldRemaining = (float)_shieldHP / (float)_shieldMaxHP;
-        Color newShieldColor = Color.Lerp(Color.black, _shieldColorOriginal, fractionOfShieldRemaining);
-        _shieldObject.GetComponent<SpriteRenderer>().color = newShieldColor;
-    }
-
-    void PlayerDeath()
-    {
-        _lives = 0;
-        _spawnManager.OnPlayerDeath();
-
-        // Stop movement
-        _baseSpeed = 0f;
-        _thrusterSpeed = 0f;
-
-        //Create explosion and destroy player
-        Instantiate(_explosion, transform.position, Quaternion.identity);
-        Destroy(gameObject, 0.3f);
-    }
-
-    public void ToggleShields(bool shieldOn)
-    {  
-        _shieldObject.SetActive(shieldOn);
-        if (shieldOn)
-        {
-            _shieldHP = _shieldMaxHP;
-            _shieldObject.GetComponent<SpriteRenderer>().color = _shieldColorOriginal;
-        }
-    }
-
     public void StartTripleShot()
     {
         if (_tripleShotRoutine != null)
@@ -362,11 +261,6 @@ public class Player : MonoBehaviour
     {
         _ammoCurrent = _ammoMaximum;
         _UIManager.UpdateAmmoCount(_ammoCurrent, _ammoMaximum);
-    }
-
-    public void RepairPowerup()
-    {
-        GainLives(1);
     }
 
     public void UpgradeWeapon()

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Missile : MonoBehaviour
+public class Missile : MonoBehaviour, I_Weapon
 {
     Transform _target;
-    Enemy _enemyScript;
+    EnemyLives _enemyScript;
 
     [SerializeField]
     float _velocity;
@@ -13,17 +13,18 @@ public class Missile : MonoBehaviour
     float _maxVelocity;
     [SerializeField]
     float _turnDegreesPerSecond;
+    [SerializeField]
+    int _damage = 3;
 
-    // Start is called before the first frame update
-    void Start()
+    public int GetDamage()
     {
-        
+        return _damage;
     }
 
     void Update()
     {
         // if target is lost, find a new one
-        if (!_target || _enemyScript == null || _enemyScript._isDead)
+        if (!_target || _enemyScript == null || _enemyScript.isDead)
             _target = SeekNewTarget();
 
         // if still no target, just keep going in our current direction
@@ -61,7 +62,7 @@ public class Missile : MonoBehaviour
         Transform closestEnemy = null;
         foreach (GameObject enemy in enemies)
         {
-            if (enemy.GetComponent<Enemy>()._isDead) continue; //ignore dead enemies!
+            if (enemy.GetComponent<EnemyLives>().isDead) continue; //ignore dead enemies!
 
             // if this new enemy is closer, pick it instead
             float distance = Vector3.Distance(enemy.transform.position, transform.position);
@@ -73,7 +74,7 @@ public class Missile : MonoBehaviour
         }
 
         if (closestEnemy)
-            _enemyScript = closestEnemy.GetComponent<Enemy>();
+            _enemyScript = closestEnemy.GetComponent<EnemyLives>();
         return closestEnemy;
     }
 }

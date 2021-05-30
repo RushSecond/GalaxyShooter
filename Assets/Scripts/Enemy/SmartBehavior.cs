@@ -78,7 +78,7 @@ public class SmartBehavior : EnemyBehavior
     void DoFire()
     {
         elapsedTime += Time.deltaTime;
-        if (elapsedTime >= _timeToFire)
+        if (elapsedTime >= _timeToFire && _playerTransform)
         {
             Vector3 vectorToPlayer = transform.position - _playerTransform.position;
             float angleToFire = Vector3.SignedAngle(Vector3.up, vectorToPlayer, Vector3.forward);
