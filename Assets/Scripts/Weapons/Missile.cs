@@ -24,7 +24,7 @@ public class Missile : MonoBehaviour, I_Weapon
     void Update()
     {
         // if target is lost, find a new one
-        if (!_target || _enemyScript == null || _enemyScript.isDead)
+        if (!_target || _enemyScript == null || _enemyScript.IsDead)
             _target = SeekNewTarget();
 
         // if still no target, just keep going in our current direction
@@ -62,7 +62,7 @@ public class Missile : MonoBehaviour, I_Weapon
         Transform closestEnemy = null;
         foreach (GameObject enemy in enemies)
         {
-            if (enemy.GetComponent<EnemyLives>().isDead) continue; //ignore dead enemies!
+            if (enemy.GetComponent<EnemyLives>().IsDead) continue; //ignore dead enemies!
 
             // if this new enemy is closer, pick it instead
             float distance = Vector3.Distance(enemy.transform.position, transform.position);

@@ -18,6 +18,6 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (!enemyLives.isDead) _myBehavior.Act();
+        if (!enemyLives.IsDead) _myBehavior.Act();
     }
 }

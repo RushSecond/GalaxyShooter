@@ -30,7 +30,7 @@ public class PlayerLives : LivesComponent
 
     protected override void OnDeath()
     {
-        isDead = true;
+        IsDead = true;
         _spawnManager.OnPlayerDeath();
 
         //Create explosion and destroy player

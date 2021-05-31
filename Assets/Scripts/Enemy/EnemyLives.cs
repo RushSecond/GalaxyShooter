@@ -18,7 +18,7 @@ public class EnemyLives : LivesComponent
         _audioSource = GetComponent<AudioSource>();
         _myAnimator = GetComponent<Animator>();
     }
-
+    // damaging objects when colliding with a laser or player
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
@@ -27,7 +27,7 @@ public class EnemyLives : LivesComponent
             if (playerScript)
                 playerScript.playerLives.OnTakeDamage();
 
-            OnTakeDamage();
+            OnDeath();
         }
 
         if (other.tag == "Laser")
@@ -40,7 +40,7 @@ public class EnemyLives : LivesComponent
 
     protected override void OnDeath()
     {
-        isDead = true;
+        IsDead = true;
         _UIManager.AddScore(_scoreValue);
         _spawnManager.OnEnemyDeath(gameObject); // Tell the spawn manager
 

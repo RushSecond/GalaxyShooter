@@ -1601,14 +1601,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2633015999529569653, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3617999254788842829, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5050055915534583326, guid: 4eb3a57212279304dbeb7f0a048cd62a, type: 3}
       propertyPath: m_Name
       value: SmartEnemy
@@ -3413,6 +3405,10 @@ PrefabInstance:
     - target: {fileID: 556686511349575930, guid: b2b3f3d593e23784daa7e248416edb19, type: 3}
       propertyPath: m_Name
       value: Asteroid
+      objectReference: {fileID: 0}
+    - target: {fileID: 556686511349575930, guid: b2b3f3d593e23784daa7e248416edb19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2769283547066234358, guid: b2b3f3d593e23784daa7e248416edb19, type: 3}
       propertyPath: m_RootOrder

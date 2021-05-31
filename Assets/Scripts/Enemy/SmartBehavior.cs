@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SmartBehavior : EnemyBehavior
-{
-    float elapsedTime = 0;
+{  
     enum MovingState { Moving, Firing, Waiting }
-    MovingState _myState = MovingState.Moving;
+    MovingState _myState;
 
-    Vector3[] _wayPoints;
-    int _currentMoveIndes = 0;
+    Vector3[] _wayPoints; // where this enemy will move
+    int _currentMoveIndes = -1;
     Vector3 _oldPosition;
-    float _timeToMove = -1f;
-    
+    float _timeToMove;
+
+    float elapsedTime = 0;
     [SerializeField]
     float _timeToFire = 0.5f;
     [SerializeField]
@@ -29,8 +29,8 @@ public class SmartBehavior : EnemyBehavior
         _wayPoints[3] = _wayPoints[0] + new Vector3(-2, -4, 0);
 
         transform.position = new Vector3(CameraManager.GetCameraBounds().extents.x + 1f, 0, 0);
-        _oldPosition = transform.position;
         _playerTransform = FindObjectOfType<Player>().transform;
+        ChangeState(MovingState.Moving);
     }
 
     void ChangeState(MovingState _newState)
@@ -40,7 +40,8 @@ public class SmartBehavior : EnemyBehavior
         {
             _oldPosition = transform.position;
             _currentMoveIndes = ++_currentMoveIndes % _wayPoints.Length;
-            _timeToMove = -1;
+            float distance = Vector3.Distance(_oldPosition, _wayPoints[_currentMoveIndes]);
+            _timeToMove = distance / _mySpeed;
         }
         elapsedTime = 0;
     }
@@ -63,14 +64,10 @@ public class SmartBehavior : EnemyBehavior
 
     void DoMove()
     {
-        if (_timeToMove < 0)
-        {
-            float distance = Vector3.Distance(_oldPosition, _wayPoints[_currentMoveIndes]);
-            _timeToMove = distance / _mySpeed;
-        }
         elapsedTime += Time.deltaTime;
         float progress = elapsedTime / _timeToMove;
-        transform.position = Vector3.Slerp(_oldPosition, _wayPoints[_currentMoveIndes], progress);
+        progress = Mathf.SmoothStep(0, 1, progress);
+        transform.position = Vector3.Lerp(_oldPosition, _wayPoints[_currentMoveIndes], progress);
 
         if (elapsedTime >= _timeToMove) ChangeState(MovingState.Firing);
     }

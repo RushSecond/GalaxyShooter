@@ -28,7 +28,7 @@ public class BasicEnemyBehavior : EnemyBehavior
             int fireTime = Random.Range(3, 8);
             yield return new WaitForSeconds(fireTime);
 
-            if (_myEnemy.enemyLives.isDead) break;
+            if (_myEnemy.enemyLives.IsDead) break;
             FireProjectile(transform.rotation);
         }
     }

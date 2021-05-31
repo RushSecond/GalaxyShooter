@@ -97,7 +97,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (playerLives.isDead) return;
+        if (playerLives.IsDead) return;
 
         // Reduce the cooldown time
         _laserCooldownTime -= Time.deltaTime;

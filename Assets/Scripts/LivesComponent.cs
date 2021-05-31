@@ -19,7 +19,7 @@ public abstract class LivesComponent : MonoBehaviour
     [SerializeField]
     protected GameObject _explosion;
 
-    public bool isDead { get; protected set; } = false;
+    public bool IsDead { get; protected set; } = false;
 
     protected SpawnManager _spawnManager;
     protected UIManager _UIManager;
@@ -34,12 +34,12 @@ public abstract class LivesComponent : MonoBehaviour
 
         GainLives(_maxLives);
     }
-
-    public void OnTakeDamage()
+    // take 1 damage
+    public void OnTakeDamage() 
     {
         OnTakeDamage(1);
     }
-
+    // take "amount" damage
     public virtual void OnTakeDamage(int amount)
     {
         if (_shieldHP > 0) // Shields take damage
@@ -50,7 +50,7 @@ public abstract class LivesComponent : MonoBehaviour
 
         GainLives(-amount);
     }
-
+    // gain or lose life
     protected virtual void GainLives(int livesGained)
     {
         // new lives should be clamped between 0 and max
@@ -64,7 +64,7 @@ public abstract class LivesComponent : MonoBehaviour
 
         ToggleDamageEffects();
     }
-
+    // turn on game objects that show damage
     void ToggleDamageEffects()
     {
         // loop through all damage effects
@@ -79,7 +79,7 @@ public abstract class LivesComponent : MonoBehaviour
             _damageEffectObjects[index].SetActive(turnOn);
         }
     }
-
+    // shield takes damage
     void ShieldDamage()
     {
         _shieldHP--;
@@ -94,7 +94,7 @@ public abstract class LivesComponent : MonoBehaviour
         Color newShieldColor = Color.Lerp(Color.black, _shieldColorOriginal, fractionOfShieldRemaining);
         _shieldObject.GetComponent<SpriteRenderer>().color = newShieldColor;
     }
-
+    // turn shield on or off
     public void ToggleShields(bool shieldOn)
     {
         _shieldObject.SetActive(shieldOn);
@@ -104,6 +104,6 @@ public abstract class LivesComponent : MonoBehaviour
             _shieldObject.GetComponent<SpriteRenderer>().color = _shieldColorOriginal;
         }
     }
-
+    // actions when this game object dies
     protected abstract void OnDeath();
 }
