@@ -30,11 +30,11 @@ public class EnemyLives : LivesComponent
             OnDeath();
         }
 
-        if (other.tag == "Laser")
+        if (other.tag == "Projectile")
         {
-            int damage = other.GetComponent<I_Weapon>().GetDamage();
+            int damage = other.GetComponent<IProjectile>().GetDamage();
             OnTakeDamage(damage);
-            Destroy(other.gameObject);      
+            Destroy(other.gameObject);
         }
     }
 

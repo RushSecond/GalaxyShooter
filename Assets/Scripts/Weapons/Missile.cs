@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Missile : MonoBehaviour, I_Weapon
+public class Missile : MonoBehaviour, IProjectile
 {
     Transform _target;
     EnemyLives _enemyScript;

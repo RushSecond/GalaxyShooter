@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 3901005542939019521}
   m_Layer: 0
   m_Name: Missile
-  m_TagString: Laser
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,6 +151,7 @@ MonoBehaviour:
   _velocity: 8
   _maxVelocity: 8
   _turnDegreesPerSecond: 300
+  _damage: 3
 --- !u!212 &5588202720639918120
 SpriteRenderer:
   m_ObjectHideFlags: 0
