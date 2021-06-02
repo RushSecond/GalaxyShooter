@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4520092210851147865}
   - component: {fileID: 7018903724602628880}
   - component: {fileID: 2014453796808729617}
-  - component: {fileID: 4561352120236241652}
   - component: {fileID: 3158865613218429646}
+  - component: {fileID: 4561352120236241652}
   m_Layer: 0
   m_Name: Shield_Powerup
   m_TagString: Untagged
@@ -101,22 +101,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2.2
---- !u!114 &4561352120236241652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7240325036429401041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fd3fd25d24939e4f8721997cdaf05a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mySpeed: 3
-  _powerupID: 2
-  _powerupAudio: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
-  _audioVolume: 0.6
 --- !u!95 &3158865613218429646
 Animator:
   serializedVersion: 3
@@ -136,3 +120,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4561352120236241652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7240325036429401041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd3fd25d24939e4f8721997cdaf05a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mySpeed: 3
+  _powerupID: 2
+  _powerupAudio: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _audioVolume: 0.6
+  _spawnChanceWeight: 3

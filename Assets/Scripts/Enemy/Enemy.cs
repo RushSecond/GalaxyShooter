@@ -2,10 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, ISpawnChanceWeight
 {
     private EnemyBehavior _myBehavior;
     public EnemyLives enemyLives { get; private set; }
+
+    [SerializeField]
+    private int _spawnChanceWeight = 5;
+    public int GetSpawnWeight()
+    {
+        return _spawnChanceWeight;
+    }
 
     void Start()
     {
@@ -20,4 +27,6 @@ public class Enemy : MonoBehaviour
     {
         if (!enemyLives.IsDead) _myBehavior.Act();
     }
+
+    
 }

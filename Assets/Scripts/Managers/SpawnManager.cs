@@ -40,7 +40,7 @@ public class SpawnManager : MonoBehaviour
     {
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P)) // testing powerups
-            ChooseAndCreatePowerup();
+            Instantiate(ChooseWeightedItem(_powerups), RandomPositionAtRight(), Quaternion.identity);
 #endif
     }
 
@@ -67,7 +67,8 @@ public class SpawnManager : MonoBehaviour
             yield return timeBetweenEnemies;
             // spawn an enemy
             int enemyIndex = Random.Range(0, _enemyTypes.Length);
-            GameObject newEnemy = Instantiate(_enemyTypes[enemyIndex], Vector3.zero, Quaternion.Euler(0, 0, -90));
+            GameObject newEnemy = ChooseWeightedItem(_enemyTypes);
+            newEnemy = Instantiate(newEnemy, Vector3.zero, Quaternion.Euler(0, 0, -90));
             newEnemy.transform.parent = _enemyContainer.transform;
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);
@@ -81,31 +82,34 @@ public class SpawnManager : MonoBehaviour
         while (!_stopSpawning)
         {
             yield return new WaitForSeconds(Random.Range(3, 8));
-            ChooseAndCreatePowerup();
+            GameObject chosenPowerup = ChooseWeightedItem(_powerups);
+            Instantiate(chosenPowerup, RandomPositionAtRight(), Quaternion.identity);
         }
     }
 
-    void ChooseAndCreatePowerup()
+    GameObject ChooseWeightedItem(GameObject[] objects)
     {
         int totalWeight = 0;
-        int[] weights = new int[_powerups.Length];
-        for (int i = 0; i < _powerups.Length; i++)
+        int[] weights = new int[objects.Length];
+        for (int i = 0; i < objects.Length; i++) 
         {
-            weights[i] = _powerups[i].GetComponent<Powerup>().GetSpawnWeight;
-            totalWeight += weights[i];
+            weights[i] = objects[i].GetComponent<ISpawnChanceWeight>().GetSpawnWeight();
+            totalWeight += weights[i]; // get a total of all weights in the list
         }
 
         int random = Random.Range(0, totalWeight);
-        for (int i = 0; i < _powerups.Length; i++)
+        for (int i = 0; i < objects.Length; i++)
         {
-            if(random < weights[i])
+            if(random < weights[i]) // more likely to be true for larger weights
             {
-                Instantiate(_powerups[i], RandomPositionAtRight(), Quaternion.identity);
-                return;
+                return objects[i];
             }
-
+            // guarantees random will be less than some weight
             random -= weights[i];
         }
+        // we should never reach this point
+        Debug.LogError(this + "Something has gone wrong with ChooseWeightedItem");
+        return null;
     }
 
     public void OnPlayerDeath()

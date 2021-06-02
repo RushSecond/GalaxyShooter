@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Powerup : MonoBehaviour
+public class Powerup : MonoBehaviour, ISpawnChanceWeight
 {
     [SerializeField]
     private float _mySpeed = 3f;
@@ -18,15 +18,18 @@ public class Powerup : MonoBehaviour
     }
 
     [SerializeField]
-    private PowerupType _powerupID;
-    [SerializeField]
-    private int _spawnChanceWeight = 5;
+    private PowerupType _powerupID;  
     [SerializeField]
     private AudioClip _powerupAudio;
     [SerializeField]
     private float _audioVolume = 0.6f;
 
-    public int GetSpawnWeight { get => _spawnChanceWeight; }
+    [SerializeField]
+    private int _spawnChanceWeight = 5;
+    public int GetSpawnWeight()
+    {
+        return _spawnChanceWeight;
+    }
 
     private void Start()
     {
@@ -90,4 +93,3 @@ public class Powerup : MonoBehaviour
         Destroy(gameObject);
     }
 }
-
