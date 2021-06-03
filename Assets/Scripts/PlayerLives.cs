@@ -7,9 +7,9 @@ public class PlayerLives : LivesComponent
     private CameraManager _cameraManager; 
 
     // Start is called before the first frame update
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         _cameraManager = Camera.main.GetComponent<CameraManager>();
         if (!_cameraManager)

@@ -15,6 +15,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private int _moreEnemiesPerWave;
     private int _waveNumber;
+    [SerializeField]
+    private float _shieldedEnemyChancePerWave = 0.1f;
+    private float _shieldedEnemyChance = 0f;
 
     [SerializeField]
     private GameObject[] _enemyTypes;
@@ -73,6 +76,13 @@ public class SpawnManager : MonoBehaviour
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);
             if (++enemiesCreatedSoFar >= numberOfEnemies) _allWaveEnemiesAreCreated = true;
+            // chance to add shields to enemies
+            float shieldRandom = Random.Range(0f, 1f);
+            if (shieldRandom < _shieldedEnemyChance)
+            {
+                EnemyLives lifeComponent = newEnemy.GetComponent<EnemyLives>();
+                lifeComponent.ToggleShields(true);
+            }
         }
     }
 
@@ -123,6 +133,7 @@ public class SpawnManager : MonoBehaviour
         if (_aliveEnemies.Count == 0 && _allWaveEnemiesAreCreated)
         {
             _waveNumber++;
+            _shieldedEnemyChance += _shieldedEnemyChancePerWave; // Add to shielded enemy chance
             StartCoroutine(WaveSpawnRoutine()); // start the next wave
         }
     }

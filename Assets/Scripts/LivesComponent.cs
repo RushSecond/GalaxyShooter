@@ -24,13 +24,18 @@ public abstract class LivesComponent : MonoBehaviour
     protected SpawnManager _spawnManager;
     protected UIManager _UIManager;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         _spawnManager = FindObjectOfType<SpawnManager>();
         if (!_spawnManager)
             Debug.LogError("Spawn Manager is null");
 
         _UIManager = FindObjectOfType<UIManager>();
+
+        // if shield is null, get the shield object and color
+        if (!_shieldObject)
+            _shieldObject = FindShield();
+        ToggleShields(false);
 
         GainLives(_maxLives);
     }
@@ -42,6 +47,7 @@ public abstract class LivesComponent : MonoBehaviour
     // take "amount" damage
     public virtual void OnTakeDamage(int amount)
     {
+        if (IsDead) return; // stops weird "double death" bugs from happening
         if (_shieldHP > 0) // Shields take damage
         {
             ShieldDamage();
@@ -79,6 +85,20 @@ public abstract class LivesComponent : MonoBehaviour
             _damageEffectObjects[index].SetActive(turnOn);
         }
     }
+    // Get a shield object
+    GameObject FindShield()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            if (child.tag == "Shield")
+            {
+                _shieldColorOriginal = child.GetComponent<SpriteRenderer>().color;
+                return child.gameObject;
+            }
+        }
+        return null;
+    }
     // shield takes damage
     void ShieldDamage()
     {
@@ -97,6 +117,7 @@ public abstract class LivesComponent : MonoBehaviour
     // turn shield on or off
     public void ToggleShields(bool shieldOn)
     {
+        if (!_shieldObject) return;
         _shieldObject.SetActive(shieldOn);
         if (shieldOn)
         {

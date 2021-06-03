@@ -12,9 +12,9 @@ public class EnemyLives : LivesComponent
     private AudioSource _audioSource;
     private Animator _myAnimator;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         _audioSource = GetComponent<AudioSource>();
         _myAnimator = GetComponent<Animator>();
     }

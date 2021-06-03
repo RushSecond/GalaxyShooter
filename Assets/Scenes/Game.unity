@@ -155,7 +155,8 @@ MonoBehaviour:
   _durationOfEntireWave: 15
   _timeBetweenWaves: 2
   _firstWaveNumberEnemies: 8
-  _moreEnemiesPerWave: 4
+  _moreEnemiesPerWave: 2
+  _shieldedEnemyChancePerWave: 0.1
   _enemyTypes:
   - {fileID: 8579086677366891526, guid: 9fc16c75ca465a24c82dbc5f7959623f, type: 3}
   - {fileID: 6020700809300922591, guid: 0553fbcc28952574d980d84d4f78c0fb, type: 3}
@@ -1186,7 +1187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &884429076
 SpriteRenderer:
   m_ObjectHideFlags: 0
