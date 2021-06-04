@@ -7,17 +7,17 @@ public class BasicEnemyBehavior : EnemyBehavior
     protected override void Start()
     {
         base.Start();
-        transform.position = SpawnManager.RandomPositionAtRight();
+        transform.position = CameraManager.RandomPositionAtRight();
         StartCoroutine(FireLaserRoutine());
     }
 
     public override void Act()
     {
-        transform.Translate(Vector3.down * _mySpeed * Time.deltaTime);
+        transform.position += Vector3.left * _mySpeed * Time.deltaTime;
 
         if (transform.position.x <= -CameraManager.GetCameraBounds().extents.x - 1f)
         {
-            transform.position = SpawnManager.RandomPositionAtRight();
+            transform.position = CameraManager.RandomPositionAtRight();
         }
     }
 
@@ -29,7 +29,7 @@ public class BasicEnemyBehavior : EnemyBehavior
             yield return new WaitForSeconds(fireTime);
 
             if (_myEnemy.enemyLives.IsDead) break;
-            FireProjectile(transform.rotation);
+            FireProjectile(Quaternion.Euler(0, 0, -90f));
         }
     }
 }

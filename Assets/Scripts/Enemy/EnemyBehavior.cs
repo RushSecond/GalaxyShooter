@@ -7,6 +7,8 @@ public abstract class EnemyBehavior : MonoBehaviour
     protected Enemy _myEnemy;
 
     [SerializeField]
+    protected float _startingZRotation = 0f;
+    [SerializeField]
     protected float _mySpeed = 4f;
     [SerializeField]
     private GameObject _myProjectile;
@@ -23,6 +25,7 @@ public abstract class EnemyBehavior : MonoBehaviour
 
     protected void BehaviorSetup()
     {
+        transform.rotation = Quaternion.Euler(0f, 0f, _startingZRotation);
         _myEnemy = GetComponent<Enemy>();
         _audioSource = GetComponent<AudioSource>();
     }

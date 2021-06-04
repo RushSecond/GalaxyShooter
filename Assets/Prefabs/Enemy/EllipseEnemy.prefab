@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1d4f647c9ec0e469555092665f7eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startingZRotation: -90
   _mySpeed: 3
   _myProjectile: {fileID: 3116400379239090600, guid: ad618a4a48e88ba429be7f2bc31ff471, type: 3}
   _projectileOffset: {x: -1, y: 0, z: 0}

@@ -27,7 +27,7 @@ public class EnemyLives : LivesComponent
             if (playerScript)
                 playerScript.playerLives.OnTakeDamage();
 
-            OnDeath();
+            OnTakeDamage();
         }
 
         if (other.tag == "Projectile")

@@ -70,7 +70,34 @@ public class CameraManager : MonoBehaviour
         float width = height * myself.aspect;
         Vector3 center = Vector3.ProjectOnPlane(myself.transform.position, Vector3.forward);
 
-        Bounds cameraBounds = new Bounds(myself.transform.position, new Vector3(width, height, 0));
+        Bounds cameraBounds = new Bounds(myself.transform.position, new Vector3(width, height, 50));
         return cameraBounds;
+    }
+
+    /// <summary>
+    /// Gets a a random point at the right of the screen
+    /// </summary>
+    public static Vector3 RandomPositionAtRight()
+    {
+        Bounds cameraBounds = GetCameraBounds();
+        float xPosition = cameraBounds.center.x + cameraBounds.extents.x + 1.5f;
+
+        float yMax = cameraBounds.center.y + cameraBounds.extents.y - 0.5f;
+        float yPosition = Random.Range(-yMax, yMax);
+
+        return new Vector3(xPosition, yPosition, 0);
+    }
+
+    /// <summary>
+    /// Returns true if object is within allowed distance of the camera bounds
+    /// </summary>
+    /// <param name="pointToCheck"></param>
+    /// <param name="allowedDistanceOutside"></param>
+    /// <returns></returns>
+    public static bool IsInsdeCameraBounds(Vector3 pointToCheck, float allowedDistanceOutside)
+    {
+        Bounds bounds = GetCameraBounds();
+        bounds.Expand(allowedDistanceOutside);
+        return bounds.Contains(pointToCheck);
     }
 }

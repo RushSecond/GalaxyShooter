@@ -43,7 +43,7 @@ public class SpawnManager : MonoBehaviour
     {
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P)) // testing powerups
-            Instantiate(ChooseWeightedItem(_powerups), RandomPositionAtRight(), Quaternion.identity);
+            Instantiate(ChooseWeightedItem(_powerups), CameraManager.RandomPositionAtRight(), Quaternion.identity);
 #endif
     }
 
@@ -71,7 +71,7 @@ public class SpawnManager : MonoBehaviour
             // spawn an enemy
             int enemyIndex = Random.Range(0, _enemyTypes.Length);
             GameObject newEnemy = ChooseWeightedItem(_enemyTypes);
-            newEnemy = Instantiate(newEnemy, Vector3.zero, Quaternion.Euler(0, 0, -90));
+            newEnemy = Instantiate(newEnemy, Vector3.zero, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);
@@ -93,7 +93,7 @@ public class SpawnManager : MonoBehaviour
         {
             yield return new WaitForSeconds(Random.Range(3, 8));
             GameObject chosenPowerup = ChooseWeightedItem(_powerups);
-            Instantiate(chosenPowerup, RandomPositionAtRight(), Quaternion.identity);
+            Instantiate(chosenPowerup, CameraManager.RandomPositionAtRight(), Quaternion.identity);
         }
     }
 
@@ -136,19 +136,5 @@ public class SpawnManager : MonoBehaviour
             _shieldedEnemyChance += _shieldedEnemyChancePerWave; // Add to shielded enemy chance
             StartCoroutine(WaveSpawnRoutine()); // start the next wave
         }
-    }
-
-    /// <summary>
-    /// Gets a a random point at the right of the screen
-    /// </summary>
-    public static Vector3 RandomPositionAtRight()
-    {
-        Bounds cameraBounds = CameraManager.GetCameraBounds();
-        float xPosition = cameraBounds.center.x + cameraBounds.extents.x + 1f;
-
-        float yMax = cameraBounds.center.y + cameraBounds.extents.y - 0.5f;
-        float yPosition = Random.Range(-yMax, yMax);
-
-        return new Vector3(xPosition, yPosition, 0);
     }
 }
