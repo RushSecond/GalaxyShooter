@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RammingBehavior : EnemyBehavior
 {
-    enum State { Moving, Preparing, Ramming }
+    enum State { Moving, Preparing, Ramming, Reappear }
     State _myState;
 
     float _elapsedTime = 0;
@@ -16,6 +16,16 @@ public class RammingBehavior : EnemyBehavior
     float _rammingSpeed = 0f;
     [SerializeField]
     float _rammingAcceleration = 40f;
+    [SerializeField]
+    Transform _thrusterTransform;
+    [SerializeField]
+    float _thrusterSizeRatioPerSecond = 2f;
+    [SerializeField]
+    AudioClip _thrusterSound;
+    Vector3 _thrusterIntitialScale;
+    [SerializeField]
+    float _timeToReappear = 1f;
+
     Vector3 _targetDirectionToRam;
     Quaternion _targetRotation;
     Transform _playerTransform;
@@ -27,6 +37,7 @@ public class RammingBehavior : EnemyBehavior
         transform.position = CameraManager.RandomPositionAtRight();
         _playerTransform = FindObjectOfType<Player>().transform;
         _myDefaultRotation = Quaternion.Euler(0, 0, _startingZRotation);
+        _thrusterIntitialScale = _thrusterTransform.localScale;
         ChangeState(State.Moving);
     }
 
@@ -34,18 +45,19 @@ public class RammingBehavior : EnemyBehavior
     {
         _myState = _newState;
         _elapsedTime = 0;
-        switch (_myState)
+        switch ((int)_myState)
         {
-            case State.Moving:
-                transform.position = CameraManager.RandomPositionAtRight();
-                transform.rotation = _myDefaultRotation;
+            case 0:
+                SetupMove();
                 break;
-            case State.Preparing:
-                _targetDirectionToRam = _playerTransform.position - transform.position;
-                _targetRotation = _myDefaultRotation * Quaternion.FromToRotation(Vector3.left, _targetDirectionToRam);
+            case 1:
+                SetupPrepare();
                 break;
-            case State.Ramming:
-                _rammingSpeed = 0f;
+            case 2:
+                SetupRamming();
+                break;
+            case 3:
+                StartCoroutine(ReappearRoutine());
                 break;
         }        
     }
@@ -66,6 +78,13 @@ public class RammingBehavior : EnemyBehavior
         }
     }
 
+    void SetupMove()
+    {
+        _thrusterTransform.localScale = _thrusterIntitialScale;
+        transform.position = CameraManager.RandomPositionAtRight();
+        transform.rotation = _myDefaultRotation;
+    }
+
     private void DoMove()
     {
         transform.position += Vector3.left * _mySpeed * Time.deltaTime;
@@ -73,6 +92,12 @@ public class RammingBehavior : EnemyBehavior
         float distanceToPlayer = Vector3.Distance(transform.position, _playerTransform.position);
         if (distanceToPlayer < _minDistanceToRamPlayer)            
             ChangeState(State.Preparing);
+    }
+
+    private void SetupPrepare()
+    {
+        _targetDirectionToRam = _playerTransform.position - transform.position;
+        _targetRotation = _myDefaultRotation * Quaternion.FromToRotation(Vector3.left, _targetDirectionToRam);
     }
 
     private void DoPrepare()
@@ -84,11 +109,28 @@ public class RammingBehavior : EnemyBehavior
             ChangeState(State.Ramming);
     }
 
+    private void SetupRamming()
+    {
+        PlaySound(_thrusterSound);
+        _rammingSpeed = 0f;
+    }
+
     private void DoRam()
     {
+        _elapsedTime += Time.deltaTime;
+        // accelerate and then move
         _rammingSpeed += _rammingAcceleration * Time.deltaTime;
         transform.position += _rammingSpeed * Time.deltaTime * _targetDirectionToRam;
-        if (transform.position.x <= -CameraManager.GetCameraBounds().extents.x - 5f)
-            ChangeState(State.Moving);
+        // make the thruster larger
+        Vector3 newThrusterScale = (1f + _thrusterSizeRatioPerSecond * _elapsedTime) * _thrusterIntitialScale;
+        _thrusterTransform.localScale = newThrusterScale;
+        if (!CameraManager.IsInsideCameraBounds(transform.position, 5f))
+            ChangeState(State.Reappear);
+    }
+
+    private IEnumerator ReappearRoutine()
+    {
+        yield return new WaitForSeconds(_timeToReappear);
+        ChangeState(State.Moving);
     }
 }

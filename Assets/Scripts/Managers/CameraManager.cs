@@ -94,7 +94,7 @@ public class CameraManager : MonoBehaviour
     /// <param name="pointToCheck"></param>
     /// <param name="allowedDistanceOutside"></param>
     /// <returns></returns>
-    public static bool IsInsdeCameraBounds(Vector3 pointToCheck, float allowedDistanceOutside)
+    public static bool IsInsideCameraBounds(Vector3 pointToCheck, float allowedDistanceOutside)
     {
         Bounds bounds = GetCameraBounds();
         bounds.Expand(allowedDistanceOutside);

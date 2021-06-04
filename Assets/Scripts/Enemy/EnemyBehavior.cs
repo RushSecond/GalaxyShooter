@@ -35,7 +35,12 @@ public abstract class EnemyBehavior : MonoBehaviour
     protected void FireProjectile(Quaternion rotation)
     {
         Instantiate(_myProjectile, transform.position + _projectileOffset, rotation);
-        _audioSource.clip = _projectileAudio;
+        PlaySound(_projectileAudio);
+    }
+
+    protected void PlaySound(AudioClip sound)
+    {
+        _audioSource.clip = sound;
         _audioSource.Play();
     }
 }
