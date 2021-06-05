@@ -78,9 +78,8 @@ public class SmartBehavior : EnemyBehavior
         if (elapsedTime >= _timeToFire && _playerTransform)
         {
             Vector3 vectorToPlayer = _playerTransform.position - transform.position;
-            float angleToFire = Vector3.SignedAngle(Vector3.down, vectorToPlayer, Vector3.forward);
-            Quaternion playerDirection = Quaternion.Euler(0, 0, angleToFire);
-            FireProjectile(playerDirection);
+            float angleToFire = Vector3.SignedAngle(Vector3.right, vectorToPlayer, Vector3.forward);
+            FireProjectile(angleToFire);
             ChangeState(MovingState.Waiting);
         }
     }

@@ -21,7 +21,7 @@ public class Laser : MonoBehaviour, IProjectile
 
         // if the laser y position is greater than 5.5f, destroy it
         // and destroy parent too if it has one
-        if (Mathf.Abs(transform.position.x) > CameraManager.GetCameraBounds().extents.x + 1f)
+        if (!CameraManager.IsInsideCameraBounds(transform.position, 2f))
         {
             Transform myParent = transform.parent;
             if (transform.parent)

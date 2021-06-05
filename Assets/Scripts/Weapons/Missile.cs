@@ -62,7 +62,9 @@ public class Missile : MonoBehaviour, IProjectile
         Transform closestEnemy = null;
         foreach (GameObject enemy in enemies)
         {
-            if (enemy.GetComponent<EnemyLives>().IsDead) continue; //ignore dead enemies!
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (enemyScript == null) continue; // ignore non-scripted hitboxes
+            if (enemyScript.enemyLives.IsDead) continue; //ignore dead enemies!
 
             // if this new enemy is closer, pick it instead
             float distance = Vector3.Distance(enemy.transform.position, transform.position);

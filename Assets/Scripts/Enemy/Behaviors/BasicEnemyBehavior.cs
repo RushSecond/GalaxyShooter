@@ -23,13 +23,13 @@ public class BasicEnemyBehavior : EnemyBehavior
 
     protected IEnumerator FireLaserRoutine()
     {
-        while (true)
+        while (!_myEnemy.enemyLives.IsDead)
         {
             int fireTime = Random.Range(3, 8);
             yield return new WaitForSeconds(fireTime);
 
             if (_myEnemy.enemyLives.IsDead) break;
-            FireProjectile(Quaternion.Euler(0, 0, -90f));
+            FireProjectile(180);
         }
     }
 }

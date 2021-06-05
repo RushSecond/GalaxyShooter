@@ -88,10 +88,14 @@ public class RammingBehavior : EnemyBehavior
     private void DoMove()
     {
         transform.position += Vector3.left * _mySpeed * Time.deltaTime;
+        // if the enemy goes off the screen to the left, it should reappear on the right
+        if (transform.position.x <= -CameraManager.GetCameraBounds().extents.x - 1f)
+            transform.position = CameraManager.RandomPositionAtRight();
         // check distance to player
+        if (!_playerTransform) return;
         float distanceToPlayer = Vector3.Distance(transform.position, _playerTransform.position);
         if (distanceToPlayer < _minDistanceToRamPlayer)            
-            ChangeState(State.Preparing);
+            ChangeState(State.Preparing);      
     }
 
     private void SetupPrepare()

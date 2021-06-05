@@ -71,7 +71,7 @@ public class SpawnManager : MonoBehaviour
             // spawn an enemy
             int enemyIndex = Random.Range(0, _enemyTypes.Length);
             GameObject newEnemy = ChooseWeightedItem(_enemyTypes);
-            newEnemy = Instantiate(newEnemy, Vector3.zero, Quaternion.identity);
+            newEnemy = Instantiate(newEnemy, Vector3.zero, newEnemy.transform.rotation);
             newEnemy.transform.parent = _enemyContainer.transform;
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);

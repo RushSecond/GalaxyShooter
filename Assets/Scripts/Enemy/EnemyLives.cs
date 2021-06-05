@@ -45,7 +45,9 @@ public class EnemyLives : LivesComponent
         _spawnManager.OnEnemyDeath(gameObject); // Tell the spawn manager
 
         // Enemy should no longer collide   
-        GetComponent<Collider2D>().enabled = false;
+        Collider2D[] allColliders = GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D collider in allColliders)
+            collider.enabled = false;
         // Explosion should appear behind other alive enemies
         GetComponent<SpriteRenderer>().sortingOrder = -10;
 
