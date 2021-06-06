@@ -19,8 +19,6 @@ public class Laser : MonoBehaviour, IProjectile
         // move right by my speed every second
         transform.Translate(Vector3.up * _mySpeed * Time.deltaTime);
 
-        // if the laser y position is greater than 5.5f, destroy it
-        // and destroy parent too if it has one
         if (!CameraManager.IsInsideCameraBounds(transform.position, 2f))
         {
             Transform myParent = transform.parent;

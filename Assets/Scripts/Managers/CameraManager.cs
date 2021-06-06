@@ -82,7 +82,7 @@ public class CameraManager : MonoBehaviour
         Bounds cameraBounds = GetCameraBounds();
         float xPosition = cameraBounds.center.x + cameraBounds.extents.x + 1.5f;
 
-        float yMax = cameraBounds.center.y + cameraBounds.extents.y - 0.5f;
+        float yMax = cameraBounds.center.y + cameraBounds.extents.y - 1.2f;
         float yPosition = Random.Range(-yMax, yMax);
 
         return new Vector3(xPosition, yPosition, 0);

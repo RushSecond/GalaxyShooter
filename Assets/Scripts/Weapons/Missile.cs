@@ -23,6 +23,9 @@ public class Missile : MonoBehaviour, IProjectile
 
     void Update()
     {
+        if (!CameraManager.IsInsideCameraBounds(transform.position, 2f))
+            Destroy(gameObject);
+
         // if target is lost, find a new one
         if (!_target || _enemyScript == null || _enemyScript.IsDead)
             _target = SeekNewTarget();
