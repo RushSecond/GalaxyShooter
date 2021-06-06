@@ -6,8 +6,11 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
 {
     [SerializeField]
     private float _mySpeed = 3f;
+    private Transform _magnetizedTransform;
+    [SerializeField]
+    private float _magnetizedSpeed = 6f;
 
-    private enum PowerupType {
+    public enum PowerupType {
         TripleShot,
         Speed,
         Shield,
@@ -19,6 +22,11 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
 
     [SerializeField]
     private PowerupType _powerupID;  
+    public PowerupType getPowerupType()
+    {
+        return _powerupID;
+    }
+
     [SerializeField]
     private AudioClip _powerupAudio;
     [SerializeField]
@@ -39,7 +47,15 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
 
     void Update()
     {
-        transform.Translate(Vector3.left * _mySpeed * Time.deltaTime);
+        // Move toward the player if they have magnetized this
+        if (_magnetizedTransform)
+        {
+            Vector3 directionToMove = Vector3.Normalize(_magnetizedTransform.position - transform.position);
+            transform.position += _magnetizedSpeed * Time.deltaTime * directionToMove;
+            return;
+        }
+
+        transform.position += Vector3.left * _mySpeed * Time.deltaTime;
 
         if (transform.position.x <= -CameraManager.GetCameraBounds().extents.x - 1f)
         {
@@ -64,32 +80,14 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
             return;
         }
 
-        switch ((int)_powerupID)
-        {
-            case 0:
-                playerScript.StartTripleShot();
-                break;
-            case 1:
-                playerScript.StartSpeed();
-                break;
-            case 2:
-                playerScript.playerLives.ToggleShields(true);
-                break;
-            case 3:
-                playerScript.GainAmmo();
-                break;
-            case 4:
-                playerScript.playerLives.RepairPowerup();
-                break;
-            case 5:
-                playerScript.GainMissiles();
-                break;
-            case 6:
-                playerScript.UpgradeWeapon();
-                break;
-        }
+        playerScript.OnPickupPowerup(this);
 
         AudioSource.PlayClipAtPoint(_powerupAudio, Camera.main.transform.position, _audioVolume);
         Destroy(gameObject);
+    }
+
+    public void OnMagnetized(Transform player)
+    {
+        _magnetizedTransform = player;
     }
 }

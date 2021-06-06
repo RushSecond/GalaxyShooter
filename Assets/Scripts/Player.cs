@@ -69,6 +69,12 @@ public class Player : MonoBehaviour
     private int _missileCount;
     private bool _canShootMissile = true;
 
+    [Header("Magnet")]
+    [SerializeField]
+    private float _magnetCooldownTime = 10f;
+    private bool _canUseMagnet = true;
+    private int _numPowerupsCollected = 0;
+
     private UIManager _UIManager;
     public PlayerLives playerLives { get; private set; }
 
@@ -115,6 +121,13 @@ public class Player : MonoBehaviour
         if (Input.GetButton("Fire2") && _canShootMissile && _missileCount > 0)
         {
             FireMissile();
+        }
+
+        // If magnet button is pressed, no magnet cooldown is remaining,
+        // then activate powerup magnet
+        if (Input.GetButton("Magnet") && _canUseMagnet)
+        {
+            StartCoroutine(PowerupMagnetRoutine());
         }
 
         CalculateMovement();
@@ -171,6 +184,74 @@ public class Player : MonoBehaviour
     {
         _missileCount = _maxMissiles;
         _UIManager.UpdateMissileCount(_missileCount);
+    }
+
+    IEnumerator PowerupMagnetRoutine()
+    {
+        GameObject[] allPowerups = GameObject.FindGameObjectsWithTag("Powerup");
+        int numPowerupsToCollect = allPowerups.Length;
+        // don't actually use magnet if there's no powerup on screen
+        if (numPowerupsToCollect == 0) yield break;
+
+        _numPowerupsCollected = 0;
+        _canUseMagnet = false;
+        _UIManager.OnMagnetUsed(); // tell UI we are using the magnet
+        foreach (GameObject powerup in allPowerups)
+        { // Magnetize them all, so they move toward the player
+            Powerup powerupScript = powerup.GetComponent<Powerup>();
+            powerupScript.OnMagnetized(this.transform);
+        }
+        while(_numPowerupsCollected < numPowerupsToCollect)
+        {
+            yield return null; // wait until all powerups are collected
+        }
+        StartCoroutine(MagnetCooldownRoutine());
+    }
+
+    IEnumerator MagnetCooldownRoutine()
+    {
+        float elapsedTime = 0f;
+        _UIManager.UpdateMagnetRecharge(0f); // tell UI to empty gauge
+        while (elapsedTime < _magnetCooldownTime)
+        {
+            yield return null;
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / _magnetCooldownTime;
+            // tell UI to recharge gauge
+            _UIManager.UpdateMagnetRecharge(progress);      
+        }
+        _canUseMagnet = true; // cooldown done!
+    }
+
+    public void OnPickupPowerup(Powerup powerup)
+    {
+        _numPowerupsCollected++;
+
+        switch ((int)powerup.getPowerupType())
+        {
+            case 0:
+                StartTripleShot();
+                break;
+            case 1:
+                StartSpeed();
+                break;
+                // etc
+            case 2:
+                playerLives.ToggleShields(true);
+                break;
+            case 3:
+                GainAmmo();
+                break;
+            case 4:
+                playerLives.RepairPowerup();
+                break;
+            case 5:
+                GainMissiles();
+                break;
+            case 6:
+                UpgradeWeapon();
+                break;
+        }
     }
 
     void CalculateMovement()

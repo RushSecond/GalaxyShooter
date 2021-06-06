@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class UIManager : MonoBehaviour
     [Header("Lives")]
     [SerializeField]
     private Text _scoreText;
+    private int _totalScore;
     [SerializeField]
     private Image _LivesImg;
     [SerializeField]
@@ -45,6 +47,7 @@ public class UIManager : MonoBehaviour
     private Text _restartText;
     [SerializeField]
     private float _textFlashDelay;
+    private GameManager _gameManager;
 
     [Header("Thruster Heat")]
     [SerializeField]
@@ -63,8 +66,26 @@ public class UIManager : MonoBehaviour
     private string _normalHeatString = "Thruster Heat";
     private bool _overheatRoutine = false;
 
-    private int _totalScore;
-    private GameManager _gameManager;
+    [Header("Magnet")]
+    [SerializeField]
+    private Slider _magnetGauge;
+    [SerializeField]
+    private Image _magnetFillImage;
+    [SerializeField]
+    private Color _magnetOriginalColor;
+    [SerializeField]
+    private Color _magnetFlashColor;
+    [SerializeField]
+    private float _magnetColorBlendTime;
+    [SerializeField]
+    private Text _magnetText;
+    [SerializeField]
+    private string _magnetRecharingString = "Recharging";
+    [SerializeField]
+    private string _magnetString = "Magnet";
+    [SerializeField]
+    private string _magnetUseString = "Magnetizing!";
+    private bool _magnetFlashRoutine;
 
     void Start()
     {
@@ -80,6 +101,7 @@ public class UIManager : MonoBehaviour
             Debug.LogError("UI Manager couldn't find Game Manager");
 
         ResetHeatGauge();
+        UpdateMagnetRecharge(1f);
     }
 
     public void AddScore(int morePoints)
@@ -94,7 +116,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(NewWaveRoutine());
     }
 
-    public IEnumerator NewWaveRoutine()
+    IEnumerator NewWaveRoutine()
     {
         Color zeroAlpha = new Color(_waveTextBaseColor.r, _waveTextBaseColor.g, _waveTextBaseColor.b, 0);
         float timeElapsed = 0;
@@ -124,7 +146,6 @@ public class UIManager : MonoBehaviour
         //fade out
         while (timeElapsed < _waveColorBlendTime)
         {
-            // alternate between 0 and 1 by using sin squared
             _waveText.color = Color.Lerp(fadeOutStart, zeroAlpha, timeElapsed / _waveColorBlendTime);
             yield return null;
             timeElapsed += Time.deltaTime;
@@ -238,5 +259,31 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    
+    public void OnMagnetUsed()
+    {
+        _magnetText.text = _magnetUseString;
+        StartCoroutine(MagnetFlashingRoutine());
+    }
+
+    IEnumerator MagnetFlashingRoutine()
+    {
+        _magnetFlashRoutine = true;
+        float timeElapsed = 0;
+        while (_magnetFlashRoutine)
+        {                     
+            // alternate between 0 and 1 by using sin squared
+            float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI / 2) / _magnetColorBlendTime), 2);
+            _magnetFillImage.color = Color.Lerp(_magnetOriginalColor, _magnetFlashColor, lerpProgress);
+            yield return null;
+            timeElapsed += Time.deltaTime;
+        }
+        _magnetFillImage.color = _magnetOriginalColor;
+    }
+
+    public void UpdateMagnetRecharge(float progress)
+    {
+        _magnetFlashRoutine = false;
+        _magnetGauge.value = progress;
+        _magnetText.text = (progress >= 1f) ? _magnetString : _magnetRecharingString;
+    }
 }

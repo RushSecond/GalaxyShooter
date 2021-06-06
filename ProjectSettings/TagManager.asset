@@ -8,6 +8,7 @@ TagManager:
   - EnemyLaser
   - Projectile
   - Shield
+  - Powerup
   layers:
   - Default
   - TransparentFX
