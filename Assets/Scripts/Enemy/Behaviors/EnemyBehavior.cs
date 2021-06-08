@@ -14,7 +14,7 @@ public abstract class EnemyBehavior : MonoBehaviour
     [SerializeField]
     private Vector3 _projectileOffset;
     [SerializeField]
-    private AudioClip _projectileAudio;
+    protected AudioClip _projectileAudio;
     private AudioSource _audioSource;
 
     protected virtual void Start()
