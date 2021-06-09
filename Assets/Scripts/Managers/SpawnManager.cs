@@ -25,6 +25,10 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] _powerups;
+    [SerializeField]
+    private int _bossWaveNumber = 10;
+    [SerializeField]
+    private GameObject _bossEnemy;
 
     private bool _stopSpawning = false;
 
@@ -50,8 +54,16 @@ public class SpawnManager : MonoBehaviour
     public void StartSpawning() // called by player when the asteroid is destroyed
     {
         _waveNumber = 1;
-        StartCoroutine(WaveSpawnRoutine());
+        StartNextWave();
         StartCoroutine(SpawnPowerupRoutine());
+    }
+
+    private void StartNextWave()
+    {
+        if (_waveNumber == _bossWaveNumber)
+            StartCoroutine(BossWave());
+        else
+            StartCoroutine(WaveSpawnRoutine());
     }
 
     IEnumerator WaveSpawnRoutine()
@@ -71,7 +83,7 @@ public class SpawnManager : MonoBehaviour
             // spawn an enemy
             int enemyIndex = Random.Range(0, _enemyTypes.Length);
             GameObject newEnemy = ChooseWeightedItem(_enemyTypes);
-            newEnemy = Instantiate(newEnemy, Vector3.zero, newEnemy.transform.rotation);
+            newEnemy = Instantiate(newEnemy);
             newEnemy.transform.parent = _enemyContainer.transform;
             // add enemy to list          
             _aliveEnemies.Add(newEnemy);
@@ -84,6 +96,15 @@ public class SpawnManager : MonoBehaviour
                 lifeComponent.ToggleShields(true);
             }
         }
+    }
+
+    IEnumerator BossWave()
+    {
+        yield return new WaitForSeconds(_timeBetweenWaves);
+        _UIManager.OnBossWave();
+        yield return new WaitForSeconds(2f);
+        Instantiate(_bossEnemy);
+        _UIManager.OnBossAppear();
     }
 
     IEnumerator SpawnPowerupRoutine()
@@ -134,7 +155,7 @@ public class SpawnManager : MonoBehaviour
         {
             _waveNumber++;
             _shieldedEnemyChance += _shieldedEnemyChancePerWave; // Add to shielded enemy chance
-            StartCoroutine(WaveSpawnRoutine()); // start the next wave
+            StartNextWave();
         }
     }
 }

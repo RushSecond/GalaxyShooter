@@ -40,6 +40,26 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private float _waveTextDuration;
 
+    [Header("Boss Wave")]
+    [SerializeField]
+    private Text _bossWaveText;
+    [SerializeField]
+    private Color _bossTextBaseColor;
+    [SerializeField]
+    private Color _bossTextSecondColor;
+    [SerializeField]
+    private float _bossColorBlendTime;
+    [SerializeField]
+    private float _bossTextDuration;
+    [SerializeField]
+    private Slider _bossHealthBar;
+    [SerializeField]
+    private Image _bossHealthBackground;
+    [SerializeField]
+    private Image _bossHealthFill;
+    [SerializeField]
+    private float _bossHealthFadeInTime = 3f;
+
     [Header("Game Over")]
     [SerializeField]
     private Text _gameOverText;
@@ -95,6 +115,8 @@ public class UIManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
         _waveText.gameObject.SetActive(false);
+        _bossWaveText.gameObject.SetActive(false);
+        _bossHealthBar.gameObject.SetActive(false);
 
         _gameManager = FindObjectOfType<GameManager>();
         if (!_gameManager)
@@ -113,45 +135,46 @@ public class UIManager : MonoBehaviour
     public void OnStartNewWave(int waveNumber)
     {
         _waveText.text = $"Wave {waveNumber}";
-        StartCoroutine(NewWaveRoutine());
+        StartCoroutine(NewWaveRoutine(
+            _waveText, _waveTextBaseColor, _waveTextSecondColor, _waveColorBlendTime, _waveTextDuration));
     }
 
-    IEnumerator NewWaveRoutine()
+    IEnumerator NewWaveRoutine(Text textObject, Color defaultColor, Color altColor, float blendTime, float duration)
     {
-        Color zeroAlpha = new Color(_waveTextBaseColor.r, _waveTextBaseColor.g, _waveTextBaseColor.b, 0);
+        Color zeroAlpha = new Color(defaultColor.r, defaultColor.g, defaultColor.b, 0);
         float timeElapsed = 0;
-        _waveText.gameObject.SetActive(true);
+        textObject.gameObject.SetActive(true);
         // fade in
-        while (timeElapsed < _waveColorBlendTime)
+        while (timeElapsed < blendTime)
         {
-            _waveText.color = Color.Lerp(zeroAlpha, _waveTextBaseColor, timeElapsed / _waveColorBlendTime);
+            textObject.color = Color.Lerp(zeroAlpha, defaultColor, timeElapsed / blendTime);
             yield return null;
             timeElapsed += Time.deltaTime;
         }
 
         timeElapsed = 0;
         // shift between base and second color repeatedly
-        while (timeElapsed < _waveTextDuration)
+        while (timeElapsed < duration)
         {
             // alternate between 0 and 1 by using sin squared
-            float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI /2) / _waveColorBlendTime), 2);
-            _waveText.color = Color.Lerp(_waveTextBaseColor, _waveTextSecondColor, lerpProgress);
+            float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI /2) / blendTime), 2);
+            textObject.color = Color.Lerp(defaultColor, altColor, lerpProgress);
             yield return null;
             timeElapsed += Time.deltaTime;
         }
 
-        Color fadeOutStart = _waveText.color;
+        Color fadeOutStart = textObject.color;
         zeroAlpha = new Color(fadeOutStart.r, fadeOutStart.g, fadeOutStart.b, 0);
         timeElapsed = 0;
         //fade out
-        while (timeElapsed < _waveColorBlendTime)
+        while (timeElapsed < blendTime)
         {
-            _waveText.color = Color.Lerp(fadeOutStart, zeroAlpha, timeElapsed / _waveColorBlendTime);
+            textObject.color = Color.Lerp(fadeOutStart, zeroAlpha, timeElapsed / blendTime);
             yield return null;
             timeElapsed += Time.deltaTime;
         }
 
-        _waveText.gameObject.SetActive(false);
+        textObject.gameObject.SetActive(false);
     }
 
     public void UpdateLives(int currentLives)
@@ -285,5 +308,39 @@ public class UIManager : MonoBehaviour
         _magnetFlashRoutine = false;
         _magnetGauge.value = progress;
         _magnetText.text = (progress >= 1f) ? _magnetString : _magnetRecharingString;
+    }
+
+    public void OnBossWave()
+    {
+        StartCoroutine(NewWaveRoutine(
+            _bossWaveText, _bossTextBaseColor, _bossTextSecondColor, _bossColorBlendTime, _bossTextDuration));
+    }
+
+    public void OnBossAppear()
+    {
+        StartCoroutine(BossHealthFadeInRoutine());
+    }
+
+    IEnumerator BossHealthFadeInRoutine()
+    {
+        _bossHealthBar.gameObject.SetActive(true);
+        Color backgroundColor = _bossHealthBackground.color;
+        Color fillColor = _bossHealthFill.color;
+        Color zeroAlphaBackground = new Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0);
+        Color zeroAlphaFill = new Color(fillColor.r, fillColor.g, fillColor.b, 0);
+        float timeElapsed = 0;
+        // fade in
+        while (timeElapsed < _bossHealthFadeInTime)
+        {
+            timeElapsed += Time.deltaTime;
+            float progress = timeElapsed / _bossHealthFadeInTime;
+            _bossHealthBackground.color = Color.Lerp(zeroAlphaBackground, backgroundColor, progress);
+            _bossHealthFill.color = Color.Lerp(zeroAlphaFill, fillColor, progress);
+            yield return null;           
+        }
+    }
+
+    public void UpdateBossLife(float lifeRemaining)
+    {
     }
 }
