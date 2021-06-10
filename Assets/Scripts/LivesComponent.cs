@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class LivesComponent : MonoBehaviour
 {
     [SerializeField]
-    private int _maxLives = 3;
+    protected int _maxLives = 3;
     protected int _lives = 0;
     protected int _shieldHP = 0;
     [SerializeField]

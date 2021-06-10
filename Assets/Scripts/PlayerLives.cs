@@ -25,7 +25,7 @@ public class PlayerLives : LivesComponent
     protected override void GainLives(int livesGained)
     {
         base.GainLives(livesGained);
-        _UIManager.UpdateLives(_lives);
+        _UIManager.UpdatePlayerLives(_lives);
     }
 
     protected override void OnDeath()

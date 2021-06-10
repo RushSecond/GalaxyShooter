@@ -49,7 +49,7 @@ public class EnemyLives : LivesComponent
         foreach (Collider2D collider in allColliders)
             collider.enabled = false;
         // Explosion should appear behind other alive enemies
-        GetComponent<SpriteRenderer>().sortingOrder = -10;
+        transform.position += Vector3.back;
 
         HandleDeathEffects();
     }

@@ -14,7 +14,7 @@ public class SpawnManager : MonoBehaviour
     private int _firstWaveNumberEnemies;
     [SerializeField]
     private int _moreEnemiesPerWave;
-    private int _waveNumber;
+    private int _waveNumber = 0;
     [SerializeField]
     private float _shieldedEnemyChancePerWave = 0.1f;
     private float _shieldedEnemyChance = 0f;
@@ -27,6 +27,8 @@ public class SpawnManager : MonoBehaviour
     private GameObject[] _powerups;
     [SerializeField]
     private int _bossWaveNumber = 10;
+    [SerializeField]
+    private float _bossDelayTime = 2f;
     [SerializeField]
     private GameObject _bossEnemy;
 
@@ -53,17 +55,21 @@ public class SpawnManager : MonoBehaviour
 
     public void StartSpawning() // called by player when the asteroid is destroyed
     {
-        _waveNumber = 1;
         StartNextWave();
         StartCoroutine(SpawnPowerupRoutine());
     }
 
     private void StartNextWave()
     {
+        _waveNumber++;
         if (_waveNumber == _bossWaveNumber)
+        {
             StartCoroutine(BossWave());
-        else
-            StartCoroutine(WaveSpawnRoutine());
+            return;
+        }
+        _shieldedEnemyChance += _shieldedEnemyChancePerWave;
+        StartCoroutine(WaveSpawnRoutine());
+
     }
 
     IEnumerator WaveSpawnRoutine()
@@ -102,7 +108,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_timeBetweenWaves);
         _UIManager.OnBossWave();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(_bossDelayTime);
         Instantiate(_bossEnemy);
         _UIManager.OnBossAppear();
     }
@@ -153,8 +159,6 @@ public class SpawnManager : MonoBehaviour
         _aliveEnemies.Remove(enemyThatDied);
         if (_aliveEnemies.Count == 0 && _allWaveEnemiesAreCreated)
         {
-            _waveNumber++;
-            _shieldedEnemyChance += _shieldedEnemyChancePerWave; // Add to shielded enemy chance
             StartNextWave();
         }
     }

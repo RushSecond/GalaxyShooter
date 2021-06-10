@@ -64,6 +64,14 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _gameOverText;
     [SerializeField]
+    private Text _youWinText;
+    [SerializeField]
+    private Color _youWinColor;
+    [SerializeField]
+    private Color _youWinAltColor;
+    [SerializeField]
+    private float _youWinBlendTime = 0.2f;
+    [SerializeField]
     private Text _restartText;
     [SerializeField]
     private float _textFlashDelay;
@@ -177,7 +185,7 @@ public class UIManager : MonoBehaviour
         textObject.gameObject.SetActive(false);
     }
 
-    public void UpdateLives(int currentLives)
+    public void UpdatePlayerLives(int currentLives)
     {
         _LivesImg.sprite = _livesSprites[currentLives];
 
@@ -342,5 +350,28 @@ public class UIManager : MonoBehaviour
 
     public void UpdateBossLife(float lifeRemaining)
     {
+        _bossHealthBar.value = lifeRemaining;
+    }
+
+    public void OnBossDeath()
+    {
+        StartCoroutine(PlayerWinsRoutine());
+    }
+
+    IEnumerator PlayerWinsRoutine()
+    {
+        _gameManager.OnGameOver();
+        _youWinText.gameObject.SetActive(true);
+        _restartText.gameObject.SetActive(true);
+        float timeElapsed = 0;
+
+        while (true)
+        {
+            // alternate between 0 and 1 by using sin squared
+            float lerpProgress = Mathf.Pow(Mathf.Sin(timeElapsed * (Mathf.PI / 2) / _youWinBlendTime), 2);
+            _youWinText.color = Color.Lerp(_youWinColor, _youWinAltColor, lerpProgress);
+            yield return null;
+            timeElapsed += Time.deltaTime;
+        }
     }
 }
