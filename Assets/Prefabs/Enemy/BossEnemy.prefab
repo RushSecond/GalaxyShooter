@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 999107173322739663}
   - component: {fileID: 3417479754331833717}
   - component: {fileID: 2084986819208776360}
-  - component: {fileID: 82654824495441286}
+  - component: {fileID: -577131860477864107}
   - component: {fileID: 6584164392723862125}
   - component: {fileID: 5998099734438807152}
   - component: {fileID: -94441898270025284}
@@ -345,7 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb89c7cef59f1d42833bc353ce5539b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxLives: 10
+  _maxLives: 100
   _shieldMaxHP: 3
   _shieldObject: {fileID: 0}
   _shieldColorOriginal: {r: 0, g: 0, b: 0, a: 0}
@@ -353,7 +353,7 @@ MonoBehaviour:
   _explosion: {fileID: 1336379337533165143, guid: 954259ecc999334498b9e658994bf04a, type: 3}
   _scoreValue: 1000
   _explosionAudio: {fileID: 0}
---- !u!114 &82654824495441286
+--- !u!114 &-577131860477864107
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -362,16 +362,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 7376303515584190482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f1d4f647c9ec0e469555092665f7eef, type: 3}
+  m_Script: {fileID: 11500000, guid: 5de8b504ac0bdab4abab93876dd4fab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mySpeed: 1
+  _mySpeed: 4
   _myProjectile: {fileID: 3116400379239090600, guid: ad618a4a48e88ba429be7f2bc31ff471, type: 3}
   _projectileOffset: {x: 0, y: 0, z: 0}
   _projectileAudio: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  ellipseVertex: {x: 6, y: 0, z: 0}
-  semiMajorAxis: 4
-  semiMinorAxis: 2
+  moveOnScreenState:
+    _distanceAppearOffCamera: 3.5
+    _movementEndPoint: {x: 5, y: 1.5, z: 0}
+    _moveSpeed: 1.5
+  laserFanState:
+    _movementEndPoint: {x: 5, y: -1.5, z: 0}
+    _moveSpeed: 0.5
+    _numberOfVolleys: 10
+    _firstVolleyLaserCount: 5
+    _secondVolleyLaserCount: 6
+    _volleyLaserSpread: 42
 --- !u!50 &6584164392723862125
 Rigidbody2D:
   serializedVersion: 4

@@ -62,6 +62,7 @@ public class SpawnManager : MonoBehaviour
     private void StartNextWave()
     {
         _waveNumber++;
+        if (_waveNumber > _bossWaveNumber) return; // Game is over
         if (_waveNumber == _bossWaveNumber)
         {
             StartCoroutine(BossWave());
