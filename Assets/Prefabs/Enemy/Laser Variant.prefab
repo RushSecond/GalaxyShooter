@@ -61,7 +61,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5995165263144656246, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}
       propertyPath: m_TagString
-      value: EnemyLaser
+      value: EnemyProjectile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}

@@ -20,6 +20,8 @@ public class BossBehavior : EnemyBehavior
             _elapsedTime = 0;
             _startingPoint = _myTransform.position;
         }
+        public virtual void EndState()
+        { }
         public abstract void Act();
     }
 
@@ -119,39 +121,234 @@ public class BossBehavior : EnemyBehavior
     [System.Serializable]
     class BeamAttack : BossState
     {
-        [SerializeField]
-        GameObject[] beamObjects;
-
-        public override void Act()
+        [System.Serializable]
+        struct BeamObject
         {
+            [SerializeField]
+            public GameObject _beamParent;
+            [SerializeField]
+            public GameObject _beamAttack;
+            [SerializeField]
+            public GameObject _chargeBall;
+            [SerializeField]
+            public GameObject _warningLine;
         }
+
+        enum BeamAttackState { Tracking, Locked, Fire }
+        BeamAttackState _currentState;
+
+        Quaternion _targetRotation;
+
+        [SerializeField]
+        BeamObject[] _beamObjects;
+        float _defaultRotation;
+        Vector3 _maxChargeSize;
+        [SerializeField]
+        float _trackingDuration;
+        [SerializeField]
+        float _trackingFlashTime;
+        [SerializeField]
+        float _lockedOnDuration;
+        [SerializeField]
+        float _lockedFlashTime;
+        [SerializeField]
+        float _firingDuration;
 
         public override void Setup(BossBehavior myBehavior)
         {
+            base.Setup(myBehavior);
+            _maxChargeSize = _beamObjects[0]._chargeBall.transform.localScale;
+            ChangeState(BeamAttackState.Tracking);
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._chargeBall.SetActive(true);
+                obj._chargeBall.transform.localScale = Vector3.zero;
+                _myBehavior.StartCoroutine(WarningFlashRoutine(obj._warningLine));
+            }
+            _defaultRotation = _beamObjects[0]._beamParent.transform.eulerAngles.z;          
+        }
+
+        public override void EndState()
+        {
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._beamAttack.SetActive(false);
+                RotateToVector(obj._beamParent, Vector3.left, _defaultRotation);
+            }
+        }
+
+        void ChangeState(BeamAttackState newState)
+        {
+            _elapsedTime = 0;
+            _currentState = newState;
+            if (_currentState == BeamAttackState.Fire)
+                FireBeams();
+        }
+
+        public override void Act()
+        {
+            _elapsedTime += Time.deltaTime;
+            switch ((int)_currentState)
+            {
+                case 0:
+                    DoTracking();
+                    break;
+                case 1:
+                    DoLocked();
+                    break;
+                case 2:
+                    DoFire();
+                    break;
+            }
+        }
+
+        void DoTracking()
+        {
+            float progress = _elapsedTime / _trackingDuration;
+            Vector3 chargeBallScale = Vector3.Lerp(Vector3.zero, _maxChargeSize, progress);
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._chargeBall.transform.localScale = chargeBallScale;
+            }
+
+            if (_myBehavior._playerTransform)
+                RotateBeams();
+            
+            if (_elapsedTime >= _trackingDuration)
+                ChangeState(BeamAttackState.Locked);
+        }
+
+        void RotateBeams()
+        {
+            foreach (BeamObject obj in _beamObjects)
+            {
+                Vector3 directionToPlayer = _myBehavior._playerTransform.position - obj._beamParent.transform.position;
+                RotateToVector(obj._beamParent, directionToPlayer, _defaultRotation);
+            }
+        }
+
+        void DoLocked()
+        {
+            if (_elapsedTime >= _lockedOnDuration)
+                ChangeState(BeamAttackState.Fire);
+        }
+
+        void DoFire()
+        {
+            if (_elapsedTime >= _firingDuration)
+                _myBehavior.SwitchState(_myBehavior.laserTrackingState);
+        }
+
+        void FireBeams()
+        {
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._chargeBall.SetActive(false);
+                obj._beamAttack.SetActive(true);
+            }
+            _myBehavior.PlaySound(_myBehavior._projectileAudio, 0.4f);
+        }      
+
+        IEnumerator WarningFlashRoutine(GameObject warningLine)
+        {
+            WaitForSeconds slowFlash = new WaitForSeconds(_trackingFlashTime);
+            WaitForSeconds fastFlash = new WaitForSeconds(_lockedFlashTime);
+            while (_currentState != BeamAttackState.Fire)
+            {               
+                yield return _currentState == BeamAttackState.Locked ? fastFlash : slowFlash;
+                warningLine.SetActive(true);            
+                yield return _currentState == BeamAttackState.Locked ? fastFlash : slowFlash;
+                warningLine.SetActive(false);
+            }
         }
     }
 
     [System.Serializable]
     class LaserTrackingAttack : BossState
     {
-        public override void Act()
-        {
-        }
+        [SerializeField]
+        Transform[] _firstTurretSet;
+        [SerializeField]
+        Transform[] _secondTurretSet;
+        [SerializeField]
+        Vector3 _movementEndPoint;
+        [SerializeField]
+        float _moveSpeed;
+        float _timeToMove;
+        [SerializeField]
+        int _numberOfVolleys;
+        float _timeBetweenVolleys;
+        int _volleysFired;
+        float _nextVolleyTime;
 
         public override void Setup(BossBehavior myBehavior)
         {
+            base.Setup(myBehavior);
+            _timeToMove = Vector3.Distance(_startingPoint, _movementEndPoint) / _moveSpeed;
+            _timeBetweenVolleys = _timeToMove / (_numberOfVolleys + 1);
+            _nextVolleyTime = _timeBetweenVolleys;
+            _volleysFired = 0;
+        }
+
+        public override void Act()
+        {
+            _elapsedTime += Time.deltaTime;
+            float progress = _elapsedTime / _timeToMove;
+            _myTransform.position = Vector3.Lerp(_startingPoint, _movementEndPoint, progress);
+
+            if (progress >= 1f)
+            {
+                _myBehavior.SwitchState(_myBehavior.missileState);
+                return;
+            }
+            if (_elapsedTime >= _nextVolleyTime)
+            {
+                _volleysFired++;
+                // use first turret set odds, second turret set on evens
+                Transform[] turretsToFire = _volleysFired % 2 == 1 ? _firstTurretSet : _secondTurretSet;
+                FireLaserVolley(turretsToFire);
+                _nextVolleyTime += _timeBetweenVolleys;
+            }
+        }
+
+        void FireLaserVolley(Transform[] turretsToFire)
+        {
+            Vector3 direction;
+            if (!_myBehavior._playerTransform)
+                direction = Vector3.left;
+            else
+                direction = _myBehavior._playerTransform.position - _myTransform.position;
+            foreach(Transform turret in turretsToFire)
+            {
+                _myBehavior.FireProjectile(direction, turret.localPosition);
+            }
         }
     }
 
     [System.Serializable]
     class MissilesAttack : BossState
     {
+        [SerializeField]
+        GameObject _myMissile;
+        [SerializeField]
+        Transform[] _missileBays;
+        [SerializeField]
+        float _waitTime;
+
         public override void Act()
         {
+            _elapsedTime += Time.deltaTime;
+            if (_elapsedTime >= _waitTime)
+                _myBehavior.SwitchState(_myBehavior.laserFanState);
         }
 
         public override void Setup(BossBehavior myBehavior)
         {
+            base.Setup(myBehavior);
+            foreach (Transform missileBay in _missileBays)
+            {
+                Instantiate(_myMissile, missileBay.position, _myMissile.transform.rotation);
+            }
         }
     }
 
@@ -167,15 +364,18 @@ public class BossBehavior : EnemyBehavior
     MissilesAttack missileState;
 
     BossState _currentState;
+    Transform _playerTransform;
 
     protected override void Start()
     {
         base.Start();
+        _playerTransform = FindObjectOfType<Player>().transform;
         SwitchState(moveOnScreenState);
     }
 
     void SwitchState(BossState newState)
     {
+        if (_currentState != null) _currentState.EndState();
         _currentState = newState;
         _currentState.Setup(this);
     }

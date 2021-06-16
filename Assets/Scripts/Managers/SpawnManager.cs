@@ -117,11 +117,12 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawnPowerupRoutine()
     {
         // every 3-7 seconds, spawn a powerup
+        yield return new WaitForSeconds(Random.Range(3, 8));
         while (!_stopSpawning)
-        {
-            yield return new WaitForSeconds(Random.Range(3, 8));
+        {       
             GameObject chosenPowerup = ChooseWeightedItem(_powerups);
             Instantiate(chosenPowerup, CameraManager.RandomPositionAtRight(), Quaternion.identity);
+            yield return new WaitForSeconds(Random.Range(3, 8));
         }
     }
 
@@ -150,7 +151,7 @@ public class SpawnManager : MonoBehaviour
         return null;
     }
 
-    public void OnPlayerDeath()
+    public void OnGameOver()
     {
         _stopSpawning = true;
     }

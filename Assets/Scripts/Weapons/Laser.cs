@@ -33,7 +33,7 @@ public class Laser : MonoBehaviour, IProjectile
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Handle collision with player
-        if (tag == "EnemyLaser" && other.gameObject.tag == "Player")
+        if (tag == "EnemyProjectile" && other.gameObject.tag == "Player")
         {
             PlayerLives playerScript = other.GetComponent<PlayerLives>();
             HurtPlayer(playerScript);

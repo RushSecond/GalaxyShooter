@@ -6,6 +6,12 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private bool _gameOver = false;
+    SpawnManager _spawnManager;
+
+    private void Start()
+    {
+        _spawnManager = FindObjectOfType<SpawnManager>();
+    }
 
     void Update()
     {
@@ -26,5 +32,6 @@ public class GameManager : MonoBehaviour
     public void OnGameOver()
     {
         _gameOver = true;
+        _spawnManager.OnGameOver();
     }
 }

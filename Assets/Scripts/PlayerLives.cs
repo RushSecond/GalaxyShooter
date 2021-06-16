@@ -31,7 +31,6 @@ public class PlayerLives : LivesComponent
     protected override void OnDeath()
     {
         IsDead = true;
-        _spawnManager.OnPlayerDeath();
 
         //Create explosion and destroy player
         Instantiate(_explosion, transform.position, Quaternion.identity);
