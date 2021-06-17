@@ -23,15 +23,25 @@ public class CameraManager : MonoBehaviour
         StartCoroutine(CameraShakeRoutine());
     }
 
+    public void CameraShake(float intensity, float duration)
+    {
+        StartCoroutine(CameraShakeRoutine(intensity, duration));
+    }
+
     IEnumerator CameraShakeRoutine()
     {
-        float timeRemaining = _totalShakingTime;
+        yield return CameraShakeRoutine(_shakeIntensity, _totalShakingTime);
+    }
+
+    IEnumerator CameraShakeRoutine(float intensity, float duration)
+    {
+        float timeRemaining = duration;
         Vector3 shakeDirection = GetShakeDirection();
 
         while (timeRemaining > 0)
         {
             // get actual world space position we want to move the camera towards
-            Vector3 shakeTarget = basePosition + shakeDirection * _shakeIntensity;
+            Vector3 shakeTarget = basePosition + shakeDirection * intensity;
             float currentTime = -_shakeTime;
             while (currentTime < _shakeTime)
             {
@@ -45,7 +55,7 @@ public class CameraManager : MonoBehaviour
                 timeRemaining -= Time.deltaTime;
                 currentTime += Time.deltaTime;
             }
-         
+
             shakeDirection = GetShakeDirection(shakeDirection);
         }
         transform.position = basePosition;

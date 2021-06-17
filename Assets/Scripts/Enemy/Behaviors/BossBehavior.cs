@@ -253,7 +253,7 @@ public class BossBehavior : EnemyBehavior
         {
             WaitForSeconds slowFlash = new WaitForSeconds(_trackingFlashTime);
             WaitForSeconds fastFlash = new WaitForSeconds(_lockedFlashTime);
-            while (_currentState != BeamAttackState.Fire)
+            while (_currentState != BeamAttackState.Fire && !_myBehavior._myEnemy.enemyLives.IsDead)
             {               
                 yield return _currentState == BeamAttackState.Locked ? fastFlash : slowFlash;
                 warningLine.SetActive(true);            

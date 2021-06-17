@@ -5,10 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - EnemyLaser
   - Projectile
   - Shield
   - Powerup
+  - EnemyProjectile
+  - EnemyLaser
   layers:
   - Default
   - TransparentFX
@@ -54,6 +55,9 @@ TagManager:
     locked: 0
   - name: Enemies
     uniqueID: 4210110405
+    locked: 0
+  - name: Explosion
+    uniqueID: 4209632921
     locked: 0
   - name: Laser
     uniqueID: 2341104861

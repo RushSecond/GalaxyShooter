@@ -70,6 +70,7 @@ public abstract class LivesComponent : MonoBehaviour
 
         ToggleDamageEffects();
     }
+
     // turn on game objects that show damage
     void ToggleDamageEffects()
     {
@@ -79,9 +80,11 @@ public abstract class LivesComponent : MonoBehaviour
             //ignore null effects
             if (_damageEffectObjects[index] == null) continue;
 
-            // Effects with an index less than or equal to "lives -1" should be turned on
-            // All others turned off
-            bool turnOn = _lives - 1 <= index;
+            // takes lives and max lives, and creates an index between 0 and
+            // the number of damage objects
+            int damageObjectsIndex = (_lives-1) * _damageEffectObjects.Length / (_maxLives-1);
+
+            bool turnOn = damageObjectsIndex <= index;
             _damageEffectObjects[index].SetActive(turnOn);
         }
     }

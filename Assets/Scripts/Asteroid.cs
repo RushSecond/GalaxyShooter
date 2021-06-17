@@ -32,7 +32,6 @@ public class Asteroid : MonoBehaviour
 
             Destroy(other.gameObject); // Destroy laser
             GameObject explosion = Instantiate(_explosion, this.transform.position, Quaternion.identity);
-            Destroy(explosion, 3f); // Destroy the new explosion after 3 seconds  
             GetComponent<Collider2D>().enabled = false; // Turn off our collider
             Destroy(this.gameObject, 0.3f); // Detroy us after 0.3 seconds
         }
