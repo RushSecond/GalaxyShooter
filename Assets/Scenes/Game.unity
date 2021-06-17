@@ -209,7 +209,7 @@ MonoBehaviour:
   - {fileID: 2360029793824657561, guid: 4c1784ddbc5b661479f110137fea6fe1, type: 3}
   - {fileID: 4150830816745184297, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
   - {fileID: 2933089194078036257, guid: 2493729f8a2045a4c88ff56aa6570f26, type: 3}
-  _bossWaveNumber: 1
+  _bossWaveNumber: 8
   _bossDelayTime: 2
   _bossEnemy: {fileID: 7376303515584190482, guid: 5ea7362d85423374092e019e1b6d1c8e, type: 3}
 --- !u!4 &161326483

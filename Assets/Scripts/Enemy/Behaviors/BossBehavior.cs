@@ -65,6 +65,8 @@ public class BossBehavior : EnemyBehavior
         Vector3 _movementEndPoint;
         [SerializeField]
         float _moveSpeed;
+        [SerializeField]
+        float _moveSpeedPhaseTwo;
         float _timeToMove;
         [SerializeField]
         int _numberOfVolleys;
@@ -82,6 +84,7 @@ public class BossBehavior : EnemyBehavior
         {
             _elapsedTime += Time.deltaTime;
             float progress = _elapsedTime / _timeToMove;
+
             _myTransform.position = Vector3.Lerp(_startingPoint, _movementEndPoint, progress);
            
             if (progress >= 1f)
@@ -102,7 +105,8 @@ public class BossBehavior : EnemyBehavior
         public override void Setup(BossBehavior myBehavior)
         {
             base.Setup(myBehavior);
-            _timeToMove = Vector3.Distance(_startingPoint, _movementEndPoint) / _moveSpeed;
+            float speed = _myBehavior.onPhaseTwo ? _moveSpeedPhaseTwo : _moveSpeed;
+            _timeToMove = Vector3.Distance(_startingPoint, _movementEndPoint) / speed;
             _timeBetweenVolleys = _timeToMove / (_numberOfVolleys+1);
             _nextVolleyTime = _timeBetweenVolleys;
             _volleysFired = 0;
@@ -146,26 +150,28 @@ public class BossBehavior : EnemyBehavior
         [SerializeField]
         float _trackingDuration;
         [SerializeField]
+        float _trackingDurationPhaseTwo;
+        [SerializeField]
         float _trackingFlashTime;
         [SerializeField]
         float _lockedOnDuration;
         [SerializeField]
+        float _lockedOnDurationPhaseTwo;
+        [SerializeField]
         float _lockedFlashTime;
         [SerializeField]
         float _firingDuration;
+        [SerializeField]
+        int _beamVolleysPhaseTwo;
+        int _beamVolleysFired;
 
         public override void Setup(BossBehavior myBehavior)
         {
             base.Setup(myBehavior);
             _maxChargeSize = _beamObjects[0]._chargeBall.transform.localScale;
             ChangeState(BeamAttackState.Tracking);
-            foreach (BeamObject obj in _beamObjects)
-            {
-                obj._chargeBall.SetActive(true);
-                obj._chargeBall.transform.localScale = Vector3.zero;
-                _myBehavior.StartCoroutine(WarningFlashRoutine(obj._warningLine));
-            }
-            _defaultRotation = _beamObjects[0]._beamParent.transform.eulerAngles.z;          
+            _defaultRotation = _beamObjects[0]._beamParent.transform.eulerAngles.z;
+            _beamVolleysFired = 0;
         }
 
         public override void EndState()
@@ -181,6 +187,9 @@ public class BossBehavior : EnemyBehavior
         {
             _elapsedTime = 0;
             _currentState = newState;
+            if (_currentState == BeamAttackState.Tracking)
+                SetupTracking();
+
             if (_currentState == BeamAttackState.Fire)
                 FireBeams();
         }
@@ -202,9 +211,20 @@ public class BossBehavior : EnemyBehavior
             }
         }
 
+        void SetupTracking()
+        {
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._chargeBall.SetActive(true);
+                obj._chargeBall.transform.localScale = Vector3.zero;
+                _myBehavior.StartCoroutine(WarningFlashRoutine(obj._warningLine));
+            }
+        }
+
         void DoTracking()
         {
-            float progress = _elapsedTime / _trackingDuration;
+            float timetoTrack = _myBehavior.onPhaseTwo ? _trackingDurationPhaseTwo : _trackingDuration;
+            float progress = _elapsedTime / timetoTrack;
             Vector3 chargeBallScale = Vector3.Lerp(Vector3.zero, _maxChargeSize, progress);
             foreach (BeamObject obj in _beamObjects)
             {
@@ -214,7 +234,7 @@ public class BossBehavior : EnemyBehavior
             if (_myBehavior._playerTransform)
                 RotateBeams();
             
-            if (_elapsedTime >= _trackingDuration)
+            if (_elapsedTime >= timetoTrack)
                 ChangeState(BeamAttackState.Locked);
         }
 
@@ -229,25 +249,41 @@ public class BossBehavior : EnemyBehavior
 
         void DoLocked()
         {
-            if (_elapsedTime >= _lockedOnDuration)
+            float timetoLock = _myBehavior.onPhaseTwo ? _lockedOnDurationPhaseTwo : _lockedOnDuration;
+            if (_elapsedTime >= timetoLock)
                 ChangeState(BeamAttackState.Fire);
         }
 
         void DoFire()
         {
-            if (_elapsedTime >= _firingDuration)
+            if (_elapsedTime < _firingDuration) return;
+            if (_myBehavior.onPhaseTwo && _beamVolleysFired < _beamVolleysPhaseTwo)
+            {
+                ChangeState(BeamAttackState.Tracking);
+                TurnOffBeams();
+            }
+            else
                 _myBehavior.SwitchState(_myBehavior.laserTrackingState);
         }
 
         void FireBeams()
         {
+            _beamVolleysFired++;
             foreach (BeamObject obj in _beamObjects)
             {
                 obj._chargeBall.SetActive(false);
                 obj._beamAttack.SetActive(true);
             }
             _myBehavior.PlaySound(_myBehavior._projectileAudio, 0.4f);
-        }      
+        }
+
+        void TurnOffBeams()
+        {
+            foreach (BeamObject obj in _beamObjects)
+            {
+                obj._beamAttack.SetActive(false);
+            }
+        }
 
         IEnumerator WarningFlashRoutine(GameObject warningLine)
         {
@@ -274,6 +310,8 @@ public class BossBehavior : EnemyBehavior
         Vector3 _movementEndPoint;
         [SerializeField]
         float _moveSpeed;
+        [SerializeField]
+        float _moveSpeedPhaseTwo;
         float _timeToMove;
         [SerializeField]
         int _numberOfVolleys;
@@ -284,7 +322,8 @@ public class BossBehavior : EnemyBehavior
         public override void Setup(BossBehavior myBehavior)
         {
             base.Setup(myBehavior);
-            _timeToMove = Vector3.Distance(_startingPoint, _movementEndPoint) / _moveSpeed;
+            float speed = _myBehavior.onPhaseTwo ? _moveSpeedPhaseTwo : _moveSpeed;
+            _timeToMove = Vector3.Distance(_startingPoint, _movementEndPoint) / speed;
             _timeBetweenVolleys = _timeToMove / (_numberOfVolleys + 1);
             _nextVolleyTime = _timeBetweenVolleys;
             _volleysFired = 0;
@@ -334,10 +373,15 @@ public class BossBehavior : EnemyBehavior
         Transform[] _missileBays;
         [SerializeField]
         float _waitTime;
+        int missilesFired;
 
         public override void Act()
         {
             _elapsedTime += Time.deltaTime;
+            if (missilesFired < 2 && _elapsedTime >= _waitTime / 2 && _myBehavior.onPhaseTwo)
+            {
+                FireMissiles();
+            }
             if (_elapsedTime >= _waitTime)
                 _myBehavior.SwitchState(_myBehavior.laserFanState);
         }
@@ -345,6 +389,13 @@ public class BossBehavior : EnemyBehavior
         public override void Setup(BossBehavior myBehavior)
         {
             base.Setup(myBehavior);
+            missilesFired = 0;
+            FireMissiles();
+        }
+
+        void FireMissiles()
+        {
+            missilesFired++;
             foreach (Transform missileBay in _missileBays)
             {
                 Instantiate(_myMissile, missileBay.position, _myMissile.transform.rotation);
@@ -365,6 +416,12 @@ public class BossBehavior : EnemyBehavior
 
     BossState _currentState;
     Transform _playerTransform;
+
+    bool onPhaseTwo = false;
+    public void GoToPhaseTwo()
+    {
+        onPhaseTwo = true;
+    }
 
     protected override void Start()
     {

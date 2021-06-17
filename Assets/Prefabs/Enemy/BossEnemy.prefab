@@ -1785,7 +1785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb89c7cef59f1d42833bc353ce5539b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxLives: 10
+  _maxLives: 180
   _shieldMaxHP: 3
   _shieldObject: {fileID: 0}
   _shieldColorOriginal: {r: 0, g: 0, b: 0, a: 0}
@@ -1835,11 +1835,12 @@ MonoBehaviour:
   moveOnScreenState:
     _distanceAppearOffCamera: 3.5
     _movementEndPoint: {x: 5, y: 1.5, z: 0}
-    _moveSpeed: 5
+    _moveSpeed: 1.5
   laserFanState:
     _movementEndPoint: {x: 5, y: -1.5, z: 0}
-    _moveSpeed: 1
-    _numberOfVolleys: 0
+    _moveSpeed: 0.5
+    _moveSpeedPhaseTwo: 0.9
+    _numberOfVolleys: 6
     _firstVolleyLaserCount: 5
     _secondVolleyLaserCount: 6
     _volleyLaserSpread: 42
@@ -1853,11 +1854,14 @@ MonoBehaviour:
       _beamAttack: {fileID: 4539249276434422723}
       _chargeBall: {fileID: 6364270855828473980}
       _warningLine: {fileID: 5390824629951410132}
-    _trackingDuration: 1.5
+    _trackingDuration: 1.3
+    _trackingDurationPhaseTwo: 0.6
     _trackingFlashTime: 0.2
     _lockedOnDuration: 0.8
+    _lockedOnDurationPhaseTwo: 0.6
     _lockedFlashTime: 0.1
     _firingDuration: 1
+    _beamVolleysPhaseTwo: 2
   laserTrackingState:
     _firstTurretSet:
     - {fileID: 7239649641482141578}
@@ -1867,6 +1871,7 @@ MonoBehaviour:
     - {fileID: 8394905799409873947}
     _movementEndPoint: {x: 5, y: 1.5, z: 0}
     _moveSpeed: 0.5
+    _moveSpeedPhaseTwo: 0.9
     _numberOfVolleys: 8
   missileState:
     _myMissile: {fileID: 8272035108615333817, guid: 61443ba3ca243b8418a8d3102965d751, type: 3}

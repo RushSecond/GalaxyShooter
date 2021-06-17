@@ -46,12 +46,15 @@ public class BossLives : EnemyLives
     protected override void OnDeath()
     {
         IsDead = true;
-        StartCoroutine(DeathEffects());    
+        StartCoroutine(DeathEffects());
     }
 
     IEnumerator OnHalfHP()
     {
         _secondPhase = true;
+        BossBehavior myBehavior = GetComponent<BossBehavior>();
+        myBehavior.GoToPhaseTwo();
+        // other effects
         _cameraManager.CameraShake(0.1f, _secondPhaseExplosionDuration);
         yield return MiniExplosionsRoutine(_phaseOneHitboxes, _secondPhaseExplosionDuration);
 
@@ -112,6 +115,11 @@ public class BossLives : EnemyLives
                 Random.Range(hitboxArea.min.y, hitboxArea.max.y), 0);
             GameObject newExplosion = Instantiate(_explosion, randomPoint, Quaternion.identity);
             newExplosion.transform.localScale = explodeScale;
+
+            // make explosions quieter
+            AudioSource explosionAudio = newExplosion.GetComponent<AudioSource>();
+            if (explosionAudio)
+                explosionAudio.volume *= _miniExplosionScale;
         }
     }
 }
