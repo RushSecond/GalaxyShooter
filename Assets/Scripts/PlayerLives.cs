@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerLives : LivesComponent
 {
-    private CameraManager _cameraManager; 
+    private CameraManager _cameraManager;
+    private MusicManager _musicManager;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -14,6 +15,10 @@ public class PlayerLives : LivesComponent
         _cameraManager = Camera.main.GetComponent<CameraManager>();
         if (!_cameraManager)
             Debug.LogError("Camera Manager is null");
+
+        _musicManager = FindObjectOfType<MusicManager>();
+        if (!_musicManager)
+            Debug.LogError("Music Manager is null");
     }
 
     public override void OnTakeDamage(int amount)
@@ -31,7 +36,7 @@ public class PlayerLives : LivesComponent
     protected override void OnDeath()
     {
         IsDead = true;
-
+        _musicManager.OnPlayerDeath();
         //Create explosion and destroy player
         Instantiate(_explosion, transform.position, Quaternion.identity);
         Destroy(gameObject, 0.3f);

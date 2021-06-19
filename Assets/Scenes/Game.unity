@@ -188,10 +188,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5b8fe76c2553543bd1bfe150e46edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _durationOfEntireWave: 15
+  _durationOfEntireWave: 10
   _timeBetweenWaves: 2
-  _firstWaveNumberEnemies: 8
-  _moreEnemiesPerWave: 2
+  _firstWaveNumberEnemies: 5
+  _moreEnemiesPerWave: 1
   _shieldedEnemyChancePerWave: 0.08
   _enemyTypes:
   - {fileID: 8579086677366891526, guid: 9fc16c75ca465a24c82dbc5f7959623f, type: 3}
@@ -209,7 +209,7 @@ MonoBehaviour:
   - {fileID: 2360029793824657561, guid: 4c1784ddbc5b661479f110137fea6fe1, type: 3}
   - {fileID: 4150830816745184297, guid: ea41b9fc2824a794da77ac55e7fe0d67, type: 3}
   - {fileID: 2933089194078036257, guid: 2493729f8a2045a4c88ff56aa6570f26, type: 3}
-  _bossWaveNumber: 8
+  _bossWaveNumber: 7
   _bossDelayTime: 2
   _bossEnemy: {fileID: 7376303515584190482, guid: 5ea7362d85423374092e019e1b6d1c8e, type: 3}
 --- !u!4 &161326483
@@ -338,6 +338,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 257174476}
+  - component: {fileID: 257174478}
   - component: {fileID: 257174477}
   m_Layer: 0
   m_Name: Background_Music
@@ -456,6 +457,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &257174478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257174475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6075216f987f947ad4b5295586de89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _deathMusic:
+    musicClip: {fileID: 8300000, guid: fb09d638efdbff74caa608e947013ae1, type: 3}
+    volume: 0.25
+    pitch: 0.7
+    fadeInTime: 1.5
+  _bossMusic:
+    musicClip: {fileID: 8300000, guid: 75e01a61b05839945b2e0c633c0f1d63, type: 3}
+    volume: 0.3
+    pitch: -1
+    fadeInTime: 3
+  _victoryMusic:
+    musicClip: {fileID: 8300000, guid: 139cfeb84a80ecb4d81bffe72f0af4a4, type: 3}
+    volume: 0.25
+    pitch: -1
+    fadeInTime: 1.5
 --- !u!1 &409664740
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,8 +1042,8 @@ MonoBehaviour:
   _baseFireRate: 0.5
   _bonusAttackSpeedPerUpgrade: 0.3
   _myLaser: {fileID: 5995165263144656246, guid: 96e95f0babf7196418b7952d6cb1ef7f, type: 3}
-  _ammoMaximum: 20
-  _bonusMaxAmmoPerUpgrade: 10
+  _ammoMaximum: 40
+  _bonusMaxAmmoPerUpgrade: 20
   _upgradeTime: 5
   _myTripleLaser: {fileID: 7715632764734317057, guid: d488c9bfda6dc354a9593d5ca26c6fe6, type: 3}
   _tripleShotTime: 5

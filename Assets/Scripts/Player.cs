@@ -82,6 +82,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _laserAudio;
     private AudioSource _audioSource;
+    private GameManager _gameManager;
 
     private void Start()
     {
@@ -97,6 +98,10 @@ public class Player : MonoBehaviour
         if (!_audioSource)
             Debug.LogError("Player audio is null");
 
+        _gameManager = FindObjectOfType<GameManager>();
+        if (!_gameManager)
+            Debug.LogError("Game manager is null");
+
         GainAmmo();
         GainMissiles();
     }
@@ -104,6 +109,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (playerLives.IsDead) return;
+        if (_gameManager.IsPaused) return;
 
         // Reduce the cooldown time
         _laserCooldownTime -= Time.deltaTime;

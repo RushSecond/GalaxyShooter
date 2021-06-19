@@ -5,6 +5,7 @@ using UnityEngine;
 public class BossLives : EnemyLives
 {
     CameraManager _cameraManager;
+    MusicManager _musicManager;
 
     bool _secondPhase = false;
     [SerializeField]
@@ -33,6 +34,10 @@ public class BossLives : EnemyLives
     {
         base.Awake();
         _cameraManager = Camera.main.GetComponent<CameraManager>();
+
+        _musicManager = FindObjectOfType<MusicManager>();
+        if (!_musicManager)
+            Debug.LogError("Music Manager is null");
     }
 
     public override void OnTakeDamage(int amount)
@@ -74,6 +79,7 @@ public class BossLives : EnemyLives
     IEnumerator DeathEffects()
     {
         _UIManager.AddScore(_scoreValue);
+        _musicManager.StopMusic(1);
         _cameraManager.CameraShake(0.2f, _deathExplosionDuration);
         yield return MiniExplosionsRoutine(_phaseTwoHitboxes, _deathExplosionDuration);
 
@@ -83,6 +89,7 @@ public class BossLives : EnemyLives
         Destroy(this.gameObject, 0.3f);
 
         _UIManager.OnBossDeath();
+        _musicManager.OnVictory();
     }
 
     IEnumerator MiniExplosionsRoutine(GameObject hitboxesToExplode, float duration)

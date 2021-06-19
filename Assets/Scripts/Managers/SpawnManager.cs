@@ -35,12 +35,17 @@ public class SpawnManager : MonoBehaviour
     private bool _stopSpawning = false;
 
     private UIManager _UIManager;
+    private MusicManager _musicManager;
 
     private void Start()
     {
         _UIManager = FindObjectOfType<UIManager>();
         if (!_UIManager)
             Debug.LogError("UI Manager is null");
+
+        _musicManager = FindObjectOfType<MusicManager>();
+        if (!_musicManager)
+            Debug.LogError("Music Manager is null");
 
         _aliveEnemies = new List<GameObject>();
     }
@@ -109,9 +114,11 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_timeBetweenWaves);
         _UIManager.OnBossWave();
+        _musicManager.StopMusic(_bossDelayTime);
         yield return new WaitForSeconds(_bossDelayTime);
         Instantiate(_bossEnemy);
         _UIManager.OnBossAppear();
+        _musicManager.OnBossAppear();
     }
 
     IEnumerator SpawnPowerupRoutine()

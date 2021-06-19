@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     private bool _gameOver = false;
     SpawnManager _spawnManager;
+    public bool IsPaused { get; private set; } = false;
 
     private void Start()
     {
@@ -20,13 +21,24 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(1); // 1 is the game scene now
         }
 
-        #if UNITY_STANDALONE
+        if (Input.GetButtonDown("Restart") && _gameOver == false)
+        {
+            TogglePause();
+        }
+
+#if UNITY_STANDALONE
         // NEW: if player presses exit button (escape or back), exit the game
         if (Input.GetButton("Cancel"))
         {
             Application.Quit();
         }
-        #endif
+#endif
+    }
+
+    void TogglePause()
+    {
+        IsPaused = !IsPaused;
+        Time.timeScale = IsPaused ? 0 : 1;
     }
 
     public void OnGameOver()

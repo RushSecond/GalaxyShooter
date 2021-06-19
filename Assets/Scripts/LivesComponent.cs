@@ -74,6 +74,8 @@ public abstract class LivesComponent : MonoBehaviour
     // turn on game objects that show damage
     void ToggleDamageEffects()
     {
+        if (_maxLives <= 1) return;
+
         // loop through all damage effects
         for (int index = 0; index < _damageEffectObjects.Length; index++)
         {
