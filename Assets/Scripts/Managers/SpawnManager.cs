@@ -114,11 +114,11 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_timeBetweenWaves);
         _UIManager.OnBossWave();
-        _musicManager.StopMusic(_bossDelayTime);
+        _musicManager.StopMusic(_bossDelayTime); // stop music
         yield return new WaitForSeconds(_bossDelayTime);
         Instantiate(_bossEnemy);
         _UIManager.OnBossAppear();
-        _musicManager.OnBossAppear();
+        _musicManager.OnBossAppear(); // start boss music
     }
 
     IEnumerator SpawnPowerupRoutine()

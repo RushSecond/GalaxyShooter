@@ -28,11 +28,11 @@ public class MusicManager : MonoBehaviour
     float _defaultVolume;
     float _defaultPitch;
 
-    // Start is called before the first frame update
     void Start()
     {
         _myAudio = GetComponent<AudioSource>();
         if (_myAudio == null) Debug.LogError("Music Manager does not have an audio source");
+
         _defaultVolume = _myAudio.volume;
         _defaultPitch = _myAudio.pitch;
     }
