@@ -48,13 +48,17 @@ public class PlayerLives : LivesComponent
     {
         if (_shieldHP <= 0) _cameraManager.CameraShake();
         base.OnTakeDamage(amount);
-        if (_lives > 0) StartCoroutine(PlayerHurtRoutine());
     }
 
     protected override void GainLives(int livesGained)
     {
         base.GainLives(livesGained);
         _UIManager.UpdatePlayerLives(_lives);
+        if (livesGained < 0)
+        {
+            _cameraManager.CameraShake();
+            if (_lives > 0) StartCoroutine(PlayerHurtRoutine());
+        }       
     }
 
     protected override void OnDeath()

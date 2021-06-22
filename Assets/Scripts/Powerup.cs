@@ -65,9 +65,11 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Player")
+        if(other.tag == "PlayerPickup")
         {
             Player playerScript = other.GetComponent<Player>();
+            if (!playerScript)
+                playerScript = other.GetComponentInParent<Player>();
             GrantPowerup(playerScript);
         }
     }

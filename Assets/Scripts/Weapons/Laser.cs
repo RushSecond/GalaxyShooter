@@ -14,6 +14,11 @@ public class Laser : MonoBehaviour, IProjectile
         return _damage;
     }
 
+    public void OnCollide()
+    {
+        Destroy(gameObject);
+    }
+
     void Update()
     {
         // move right by my speed every second

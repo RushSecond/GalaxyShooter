@@ -32,9 +32,9 @@ public class EnemyLives : LivesComponent
 
         if (other.tag == "Projectile")
         {
-            int damage = other.GetComponent<IProjectile>().GetDamage();
-            OnTakeDamage(damage);
-            Destroy(other.gameObject);
+            IProjectile projScript = other.GetComponent<IProjectile>();
+            OnTakeDamage(projScript.GetDamage());
+            projScript.OnCollide();
         }
     }
 

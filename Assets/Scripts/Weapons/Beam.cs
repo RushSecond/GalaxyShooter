@@ -12,6 +12,9 @@ public class Beam : MonoBehaviour, IProjectile
         return _damage;
     }
 
+    public void OnCollide()
+    {    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Handle collision with player
