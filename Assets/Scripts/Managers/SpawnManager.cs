@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
     private void Update()
     {
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.P)) // testing powerups
+        if (Input.GetKeyDown(KeyCode.Alpha1)) // testing powerups
             Instantiate(ChooseWeightedItem(_powerups), CameraManager.RandomPositionAtRight(), Quaternion.identity);
 #endif
     }

@@ -63,7 +63,7 @@ public class MusicManager : MonoBehaviour
         while (progress < 1)
         {
             yield return null;
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             progress = elapsedTime / musicData.fadeInTime;
             _myAudio.volume = Mathf.Lerp(0, maxVolume, progress);
         }
@@ -82,7 +82,7 @@ public class MusicManager : MonoBehaviour
         while (progress < 1)
         {
             yield return null;
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             progress = elapsedTime / fadeOutTime;
             _myAudio.volume = Mathf.Lerp(myVolume, 0, progress);
         }

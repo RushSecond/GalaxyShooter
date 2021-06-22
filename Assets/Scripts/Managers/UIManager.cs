@@ -115,6 +115,10 @@ public class UIManager : MonoBehaviour
     private string _magnetUseString = "Magnetizing!";
     private bool _magnetFlashRoutine;
 
+    [Header("Pause")]
+    [SerializeField]
+    private GameObject _pauseOverlay;
+
     void Start()
     {
         _totalScore = 0;
@@ -132,6 +136,7 @@ public class UIManager : MonoBehaviour
 
         ResetHeatGauge();
         UpdateMagnetRecharge(1f);
+        _pauseOverlay.SetActive(false);
     }
 
     public void AddScore(int morePoints)
@@ -373,5 +378,10 @@ public class UIManager : MonoBehaviour
             yield return null;
             timeElapsed += Time.deltaTime;
         }
+    }
+
+    public void TogglePause(bool isPaused)
+    {
+        _pauseOverlay.SetActive(isPaused);
     }
 }

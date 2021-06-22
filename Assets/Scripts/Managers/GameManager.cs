@@ -7,11 +7,13 @@ public class GameManager : MonoBehaviour
 {
     private bool _gameOver = false;
     SpawnManager _spawnManager;
+    UIManager _UIManager;
     public bool IsPaused { get; private set; } = false;
 
     private void Start()
     {
         _spawnManager = FindObjectOfType<SpawnManager>();
+        _UIManager = FindObjectOfType<UIManager>();
     }
 
     void Update()
@@ -21,7 +23,7 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(1); // 1 is the game scene now
         }
 
-        if (Input.GetButtonDown("Restart") && _gameOver == false)
+        if (Input.GetButtonDown("Pause") && _gameOver == false)
         {
             TogglePause();
         }
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour
     {
         IsPaused = !IsPaused;
         Time.timeScale = IsPaused ? 0 : 1;
+        _UIManager.TogglePause(IsPaused);
     }
 
     public void OnGameOver()
