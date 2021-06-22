@@ -7,7 +7,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     float _totalShakingTime = 0.3f;
     [SerializeField]
-    float _shakeIntensity = 0.3f;
+    float _defaultIntensity = 0.3f;
     [SerializeField]
     float _shakeTime = 0.05f;
 
@@ -20,28 +20,25 @@ public class CameraManager : MonoBehaviour
 
     public void CameraShake()
     {
-        StartCoroutine(CameraShakeRoutine());
+        StartCoroutine(CameraShakeRoutine(_defaultIntensity, _totalShakingTime, true));
     }
 
-    public void CameraShake(float intensity, float duration)
+    public void CameraShake(float intensity, float duration, bool fadeOut)
     {
-        StartCoroutine(CameraShakeRoutine(intensity, duration));
+        StartCoroutine(CameraShakeRoutine(intensity, duration, fadeOut));
     }
 
-    IEnumerator CameraShakeRoutine()
-    {
-        yield return CameraShakeRoutine(_shakeIntensity, _totalShakingTime);
-    }
-
-    IEnumerator CameraShakeRoutine(float intensity, float duration)
+    IEnumerator CameraShakeRoutine(float intensity, float duration, bool fadeOut)
     {
         float timeRemaining = duration;
         Vector3 shakeDirection = GetShakeDirection();
 
         while (timeRemaining > 0)
         {
-            // get actual world space position we want to move the camera towards
-            Vector3 shakeTarget = basePosition + shakeDirection * intensity;
+            // get actual world space position we want to move the camera towards      
+            float magnitude = fadeOut ? Mathf.Lerp(0, intensity, timeRemaining / duration) : intensity;
+            Vector3 shakeTarget = basePosition + shakeDirection * magnitude;
+
             float currentTime = -_shakeTime;
             while (currentTime < _shakeTime)
             {

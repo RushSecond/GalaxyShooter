@@ -1292,6 +1292,13 @@ MonoBehaviour:
   - {fileID: 1122497306}
   - {fileID: 1603205702}
   _explosion: {fileID: 1336379337533165143, guid: 954259ecc999334498b9e658994bf04a, type: 3}
+  _invincibleDuration: 1.3
+  _invincibleAlpha: 0.3
+  _invincibleFadeTime: 0.2
+  _hurtAudioClip: {fileID: 8300000, guid: 4246bdc5b27f88544bd05de9bdc8d3d4, type: 3}
+  _hurtAudioDuration: 1.3
+  _hurtAudioVolume: 0.3
+  _hurtAudioPitch: 0.6
 --- !u!1 &834290283
 GameObject:
   m_ObjectHideFlags: 0
@@ -4069,8 +4076,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d13c7fb36447c147b10307f02547461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _totalShakingTime: 0.5
-  _shakeIntensity: 0.1
+  _totalShakingTime: 1
+  _defaultIntensity: 0.3
   _shakeTime: 0.04
 --- !u!1 &1853734250
 GameObject:

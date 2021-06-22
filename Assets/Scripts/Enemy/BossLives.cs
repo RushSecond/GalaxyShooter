@@ -60,7 +60,7 @@ public class BossLives : EnemyLives
         BossBehavior myBehavior = GetComponent<BossBehavior>();
         myBehavior.GoToPhaseTwo();
         // other effects
-        _cameraManager.CameraShake(0.1f, _secondPhaseExplosionDuration);
+        _cameraManager.CameraShake(0.1f, _secondPhaseExplosionDuration, false);
         yield return MiniExplosionsRoutine(_phaseOneHitboxes, _secondPhaseExplosionDuration);
 
         // big explosions
@@ -80,10 +80,10 @@ public class BossLives : EnemyLives
     {
         _UIManager.AddScore(_scoreValue);
         _musicManager.StopMusic(1);
-        _cameraManager.CameraShake(0.2f, _deathExplosionDuration);
+        _cameraManager.CameraShake(0.2f, _deathExplosionDuration, false);
         yield return MiniExplosionsRoutine(_phaseTwoHitboxes, _deathExplosionDuration);
 
-        _cameraManager.CameraShake(0.3f, 0.5f);
+        _cameraManager.CameraShake(0.4f, 1f, true);
         GameObject explosion = Instantiate(_explosion, this.transform.position, Quaternion.identity);
         explosion.transform.localScale = new Vector3(_deathExplosionScale, _deathExplosionScale, 1);
         Destroy(this.gameObject, 0.3f);
