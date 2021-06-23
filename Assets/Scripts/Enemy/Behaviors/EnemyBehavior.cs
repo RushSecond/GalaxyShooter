@@ -16,6 +16,8 @@ public abstract class EnemyBehavior : MonoBehaviour
     [SerializeField]
     protected AudioClip _projectileAudio;
     private AudioSource _audioSource;
+    [SerializeField]
+    private float _defaultPitch = -1;
 
     protected virtual void Start()
     {
@@ -27,6 +29,8 @@ public abstract class EnemyBehavior : MonoBehaviour
         _startingZRotation = transform.localEulerAngles.z;
         _myEnemy = GetComponent<Enemy>();
         _audioSource = GetComponent<AudioSource>();
+        if (_defaultPitch < 0)
+            _defaultPitch = _audioSource.pitch;
     }
 
     public abstract void Act();
@@ -57,7 +61,7 @@ public abstract class EnemyBehavior : MonoBehaviour
     protected void PlaySound(AudioClip sound)
     {
         _audioSource.clip = sound;
-        _audioSource.pitch = 1;
+        _audioSource.pitch = _defaultPitch;
         _audioSource.Play();
     }
 

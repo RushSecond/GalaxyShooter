@@ -20,7 +20,8 @@ public class Player : MonoBehaviour
     private float _speedDuration = 5f;
     private Coroutine _speedRoutine;
     [SerializeField]
-    private float _screenWrapY = 5.2f;
+    private Bounds _playerBounds;
+    private Animator _myAnimator;
 
     [Header("Thrusters")]
     [SerializeField]
@@ -101,6 +102,10 @@ public class Player : MonoBehaviour
         _gameManager = FindObjectOfType<GameManager>();
         if (!_gameManager)
             Debug.LogError("Game manager is null");
+
+        _myAnimator = GetComponent<Animator>();
+        if (!_myAnimator)
+            Debug.LogError("Player doesn't have an animator.");
 
         GainAmmo();
         GainMissiles();
@@ -264,6 +269,7 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+        _myAnimator.SetFloat("Turning", verticalInput);
 
         Vector3 direction = Vector3.Normalize(new Vector3(horizontalInput, verticalInput, 0f));
 
@@ -277,16 +283,9 @@ public class Player : MonoBehaviour
         // Move the player by "speed" units, every second
         transform.position += direction * speed * Time.deltaTime;
 
-        // clamp player x
-        float xPosition = Mathf.Clamp(transform.position.x, -7.5f, 0f);
-        
-        // screen wrap on y.
-        float yPosition = transform.position.y;
-        if (Mathf.Abs(yPosition) > _screenWrapY)
-        {
-            yPosition = -_screenWrapY * Mathf.Sign(yPosition);
-        }
-
+        // clamp player x and y in bounds
+        float xPosition = Mathf.Clamp(transform.position.x, _playerBounds.min.x, _playerBounds.max.x);
+        float yPosition = Mathf.Clamp(transform.position.y, _playerBounds.min.y, _playerBounds.max.y);
         transform.position = new Vector3(xPosition, yPosition, 0);
     }
 

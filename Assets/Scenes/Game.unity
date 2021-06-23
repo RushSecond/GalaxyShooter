@@ -1097,6 +1097,7 @@ GameObject:
   - component: {fileID: 722035137}
   - component: {fileID: 722035138}
   - component: {fileID: 722035139}
+  - component: {fileID: 722035141}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1192,7 +1193,9 @@ MonoBehaviour:
   _thrusterSizeMultiplier: 1.8
   _speedPowerupMutliplier: 1.6
   _speedDuration: 5
-  _screenWrapY: 5.1
+  _playerBounds:
+    m_Center: {x: -3.6, y: 0, z: 0}
+    m_Extent: {x: 3.6, y: 4.2, z: 0}
   _heatGainedPerSecond: 0.25
   _heatLostPerSecond: 0.125
   _baseFireRate: 0.5
@@ -1379,6 +1382,25 @@ MonoBehaviour:
   _hurtAudioDuration: 1.3
   _hurtAudioVolume: 0.3
   _hurtAudioPitch: 0.6
+--- !u!95 &722035141
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722035133}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 447113a01463fff4b9f861c15774cf3c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &834290283
 GameObject:
   m_ObjectHideFlags: 0
