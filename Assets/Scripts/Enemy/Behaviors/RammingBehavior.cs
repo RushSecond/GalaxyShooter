@@ -13,6 +13,10 @@ public class RammingBehavior : EnemyBehavior
     float _minDistanceToRamPlayer = 4f;
     [SerializeField]
     float _timeToPrepare = 1f;
+    [SerializeField]
+    GameObject _warningLine;
+    [SerializeField]
+    float _warningFlashTime;
     float _rammingSpeed = 0f;
     [SerializeField]
     float _rammingAcceleration = 40f;
@@ -27,7 +31,7 @@ public class RammingBehavior : EnemyBehavior
     float _timeToReappear = 1f;
 
     Vector3 _targetDirectionToRam;
-    Quaternion _targetRotation;
+    float _angleToRotate;
     Transform _playerTransform;
     Quaternion _myDefaultRotation;
 
@@ -101,16 +105,31 @@ public class RammingBehavior : EnemyBehavior
     private void SetupPrepare()
     {
         _targetDirectionToRam = _playerTransform.position - transform.position;
-        _targetRotation = _myDefaultRotation * Quaternion.FromToRotation(Vector3.left, _targetDirectionToRam);
+        float myCurrentAngle = transform.rotation.eulerAngles.z - _startingZRotation;
+        Vector3 myCurrentFacing = Quaternion.Euler(0, 0, myCurrentAngle) * Vector3.left;
+        _angleToRotate = Vector3.SignedAngle(myCurrentFacing, _targetDirectionToRam, Vector3.forward);
+        StartCoroutine(WarningLineRoutine());
     }
 
     private void DoPrepare()
     {
         _elapsedTime += Time.deltaTime;
-        float progress = _elapsedTime / _timeToPrepare;
-        transform.rotation = Quaternion.Slerp(_myDefaultRotation, _targetRotation, progress);      
+        transform.rotation *= Quaternion.AngleAxis(_angleToRotate / _timeToPrepare * Time.deltaTime, Vector3.forward);
+        RotateToVector(_warningLine, _targetDirectionToRam, 180);
         if (_elapsedTime > _timeToPrepare)
             ChangeState(State.Ramming);
+    }
+
+    IEnumerator WarningLineRoutine()
+    {
+        WaitForSeconds flashingWait = new WaitForSeconds(_warningFlashTime);
+        while (_myState == State.Preparing)
+        {
+            yield return flashingWait;
+            _warningLine.gameObject.SetActive(true);
+            yield return flashingWait;
+            _warningLine.gameObject.SetActive(false);           
+        }
     }
 
     private void SetupRamming()
