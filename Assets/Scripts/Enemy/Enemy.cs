@@ -9,10 +9,10 @@ public class Enemy : MonoBehaviour, ISpawnChanceWeight
 
     [SerializeField]
     private int _spawnChanceWeight = 5;
-    public int GetSpawnWeight()
-    {
-        return _spawnChanceWeight;
-    }
+    public int GetSpawnWeight() => _spawnChanceWeight;
+    [SerializeField]
+    private int _spawnWeightPerWave = 0;
+    public int GetWeightIncreasePerWave() => _spawnWeightPerWave; 
 
     void Start()
     {
@@ -28,5 +28,5 @@ public class Enemy : MonoBehaviour, ISpawnChanceWeight
         if (!enemyLives.IsDead) _myBehavior.Act();
     }
 
-    
+   
 }

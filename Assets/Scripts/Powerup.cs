@@ -34,10 +34,8 @@ public class Powerup : MonoBehaviour, ISpawnChanceWeight
 
     [SerializeField]
     private int _spawnChanceWeight = 5;
-    public int GetSpawnWeight()
-    {
-        return _spawnChanceWeight;
-    }
+    public int GetSpawnWeight() => _spawnChanceWeight;
+    public int GetWeightIncreasePerWave() => 0;
 
     private void Start()
     {

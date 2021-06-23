@@ -5,4 +5,5 @@ using UnityEngine;
 public interface ISpawnChanceWeight
 {
     int GetSpawnWeight();
+    int GetWeightIncreasePerWave();
 }

@@ -204,7 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a0a4f5504cad14bad07b3367bb32e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnChanceWeight: 10
+  _spawnChanceWeight: 15
+  _spawnWeightPerWave: 0
 --- !u!114 &2972153551188049944
 MonoBehaviour:
   m_ObjectHideFlags: 0

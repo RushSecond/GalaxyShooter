@@ -73,9 +73,8 @@ public class SpawnManager : MonoBehaviour
             StartCoroutine(BossWave());
             return;
         }
-        _shieldedEnemyChance += _shieldedEnemyChancePerWave;
+        if (_waveNumber > 1) _shieldedEnemyChance += _shieldedEnemyChancePerWave;
         StartCoroutine(WaveSpawnRoutine());
-
     }
 
     IEnumerator WaveSpawnRoutine()
@@ -93,7 +92,6 @@ public class SpawnManager : MonoBehaviour
         {
             yield return timeBetweenEnemies;
             // spawn an enemy
-            int enemyIndex = Random.Range(0, _enemyTypes.Length);
             GameObject newEnemy = ChooseWeightedItem(_enemyTypes);
             newEnemy = Instantiate(newEnemy);
             newEnemy.transform.parent = _enemyContainer.transform;
@@ -139,7 +137,10 @@ public class SpawnManager : MonoBehaviour
         int[] weights = new int[objects.Length];
         for (int i = 0; i < objects.Length; i++) 
         {
-            weights[i] = objects[i].GetComponent<ISpawnChanceWeight>().GetSpawnWeight();
+            ISpawnChanceWeight weightScript = objects[i].GetComponent<ISpawnChanceWeight>();
+            // add weight, and also factor in weight increase per wave
+            weights[i] = weightScript.GetSpawnWeight() 
+                + weightScript.GetWeightIncreasePerWave() * (_waveNumber - 1);
             totalWeight += weights[i]; // get a total of all weights in the list
         }
 
