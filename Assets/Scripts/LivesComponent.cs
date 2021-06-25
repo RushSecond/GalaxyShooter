@@ -12,17 +12,23 @@ public abstract class LivesComponent : MonoBehaviour
     private int _shieldMaxHP = 3;
     [SerializeField]
     private GameObject _shieldObject;
-    [SerializeField]
+    private SpriteRenderer _shieldSprite;
     private Color _shieldColorOriginal;
     [SerializeField]
     private GameObject[] _damageEffectObjects;
     [SerializeField]
     protected GameObject _explosion;
+    [SerializeField]
+    private float _hurtFlashTime = 0.08f;
 
     public bool IsDead { get; protected set; } = false;
 
     protected SpawnManager _spawnManager;
     protected UIManager _UIManager;
+    private SpriteRenderer _mySprite;
+    private Color _colorOriginal;
+    private Color _hitColor = Color.red;
+    private Color _shieldHitColor = Color.blue;
 
     protected virtual void Awake()
     {
@@ -30,11 +36,16 @@ public abstract class LivesComponent : MonoBehaviour
         if (!_spawnManager)
             Debug.LogError("Spawn Manager is null");
 
+        _mySprite = GetComponent<SpriteRenderer>();
+        if (!_mySprite)
+            Debug.LogError("Sprite renderer is null");
+        _colorOriginal = _mySprite.color;
+
         _UIManager = FindObjectOfType<UIManager>();
 
         // if shield is null, get the shield object and color
-        if (!_shieldObject)
-            _shieldObject = FindShield();
+        _shieldObject = FindShield();
+
         ToggleShields(false);
 
         GainLives(_maxLives);
@@ -50,11 +61,12 @@ public abstract class LivesComponent : MonoBehaviour
         if (IsDead) return; // stops weird "double death" bugs from happening
         if (_shieldHP > 0) // Shields take damage
         {
-            ShieldDamage();
+            StartCoroutine(ShieldDamage());
             return;
         }
 
         GainLives(-amount);
+        StartCoroutine(HitFlash());
     }
     // gain or lose life
     protected virtual void GainLives(int livesGained)
@@ -88,33 +100,51 @@ public abstract class LivesComponent : MonoBehaviour
 
             bool turnOn = damageObjectsIndex <= index;
             _damageEffectObjects[index].SetActive(turnOn);
-        }
+        }      
     }
+
+    IEnumerator HitFlash()
+    {
+            _mySprite.color = _hitColor;
+            yield return new WaitForSeconds(_hurtFlashTime);
+            _mySprite.color = _colorOriginal;
+    }
+
     // Get a shield object
     GameObject FindShield()
     {
+        if (_shieldObject)
+        {
+            _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
+            _shieldColorOriginal = _shieldSprite.color;
+            return _shieldObject;
+        }
+
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
             if (child.tag == "Shield")
             {
-                _shieldColorOriginal = child.GetComponent<SpriteRenderer>().color;
+                _shieldSprite = child.GetComponent<SpriteRenderer>();
+                _shieldColorOriginal = _shieldSprite.color;
                 return child.gameObject;
             }
         }
         return null;
     }
     // shield takes damage
-    void ShieldDamage()
-    {
+    IEnumerator ShieldDamage()
+    {       
         _shieldHP--;
+        // Change the color of the shield object to be less bright 
+        _shieldSprite.color = _shieldHitColor;
+        yield return new WaitForSeconds(_hurtFlashTime);        
         if (_shieldHP == 0)
         {
             ToggleShields(false);
-            return;
+            yield break;
         }
 
-        // Change the color of the shield object to be less bright 
         float fractionOfShieldRemaining = (float)_shieldHP / (float)_shieldMaxHP;
         Color newShieldColor = Color.Lerp(Color.black, _shieldColorOriginal, fractionOfShieldRemaining);
         _shieldObject.GetComponent<SpriteRenderer>().color = newShieldColor;

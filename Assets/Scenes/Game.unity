@@ -1375,6 +1375,7 @@ MonoBehaviour:
   - {fileID: 1122497306}
   - {fileID: 1603205702}
   _explosion: {fileID: 1336379337533165143, guid: 954259ecc999334498b9e658994bf04a, type: 3}
+  _hurtFlashTime: 0.05
   _invincibleDuration: 2.2
   _invincibleAlpha: 0.3
   _invincibleFadeTime: 0.2
